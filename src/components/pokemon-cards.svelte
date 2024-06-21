@@ -3,8 +3,8 @@
 	import { shuffle } from "../utils/helper";
 	import PokemonCard from "./pokemon-card.svelte";
 	import { localStorageStore } from "../utils/local-storage";
+	import { queryUnevolvedPokmons } from "../utils/query";
 
-  export let fetchUnevolvedPokmons;
 	const pokemons = localStorageStore<Omit<App.Pokemon, 'identifier'>[]>('pokemons', []);
   
 	let randomPokemons: App.Pokemon[] = [];
@@ -28,7 +28,7 @@
 		// NOTE sync with localStorage
 		pokemons?.subscribe(async (data: App.Pokemon[]) => {
 			if (data.length === 0) {
-				const result = await fetchUnevolvedPokmons();
+				const result = await queryUnevolvedPokmons();
 				pokemons?.set(result.data.pokemon_v2_pokemonspecies);
 				return;
 			}

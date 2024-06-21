@@ -1,8 +1,7 @@
 <script lang="ts">
 	import { getColorSchemeContext } from '$lib/contexts/color-scheme';
-  import { PUBLIC_API_URL } from '$env/static/public';
 	import Icon from '../components/icon.svelte';
-	import PokemonCardWrapper from '../components/pokemon-card-wrapper.svelte';
+	import PokemonCards from '../components/pokemon-cards.svelte';
 
 	const colorSchemeStore = getColorSchemeContext();
 	$: preferred = colorSchemeStore.preferred;
@@ -11,22 +10,6 @@
 		colorSchemeStore.change(color);
 	};
 
-	const query = `
-    query getUnevolvedPokmons {
-      pokemon_v2_pokemonspecies(where: {evolves_from_species_id: {_is_null: true}}, limit: 300) {
-        name
-        id
-      }
-    }
-  `;
-	async function fetchUnevolvedPokmons() {
-		const result = await fetch(PUBLIC_API_URL, {
-			method: 'POST',
-			body: JSON.stringify({ query })
-		});
-
-		return await result.json();
-	}
 </script>
 
 <div
@@ -42,5 +25,5 @@
 		</button>
 	</div>
 
-	<PokemonCardWrapper {fetchUnevolvedPokmons} />
+	<PokemonCards />
 </div>
