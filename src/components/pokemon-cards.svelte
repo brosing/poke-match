@@ -6,13 +6,7 @@
 	import { queryUnevolvedPokmons } from "../utils/query";
 
 	const pokemons = localStorageStore<Omit<App.Pokemon, 'identifier'>[]>('pokemons', []);
-  
 	let randomPokemons: App.Pokemon[] = [];
-	let rotatedCards: number[] = [];
-	function rotateCard(id: number) {
-		rotatedCards = [...rotatedCards, id];
-	}
-
 	function shufflePokemon(data: Omit<App.Pokemon, 'identifier'>[]) {
 		// shuffle & get only 6 of them
 		const random = shuffle(data).slice(0, 6);
@@ -32,14 +26,48 @@
 				pokemons?.set(result.data.pokemon_v2_pokemonspecies);
 				return;
 			}
-
 			randomPokemons = shufflePokemon(data);
 		});
 	});
+
+	
+	let rotatedCards: App.Pokemon[] = [];
+	let matchCards: App.Pokemon[] = []; // add flash effect on match cards
+	let lastMatchCardID: string = ''; // prevent flash effect on prev match cards
+	let onValidateCard = false // To disabled interaction
+
+	function rotateCard(poke: App.Pokemon) {
+		rotatedCards = [...rotatedCards, poke];
+	}
+	function shakeCards(cards: App.Pokemon[]) {
+		matchCards = cards;
+		setTimeout(() => {
+			matchCards = []
+		}, 800);
+	}
+	function validateCards() {
+		onValidateCard = true
+		setTimeout(() => {
+			const cards = rotatedCards.slice(-2)
+			if (cards[0].id !== cards[1].id) {
+				rotatedCards = rotatedCards.slice(0, -2)
+			} else {
+				const lastID = rotatedCards.at(-1)?.id ?? ''
+				if (lastMatchCardID !== rotatedCards.at(-1)?.id) {
+					lastMatchCardID = lastID
+					shakeCards(cards);
+				}
+			}
+			onValidateCard = false
+		}, 1000);
+	}
+	$: if (rotatedCards.length > 0 && rotatedCards.length % 2 == 0) {
+		validateCards()
+	}
 </script>
 
 <div class="grid grid-cols-3 md:grid-cols-4 md:mb-16 gap-[2px] md:gap-1 flex-1">
   {#each randomPokemons as pokemon (pokemon.identifier)}
-    <PokemonCard {pokemon} {rotateCard} {rotatedCards} />
+    <PokemonCard {pokemon} {rotateCard} {rotatedCards} {onValidateCard} {matchCards} />
   {/each}
 </div>

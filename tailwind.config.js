@@ -65,7 +65,15 @@ export default {
 					'100%': {
 						transform: 'rotateY(-180deg)'
 					}
-				}
+				},
+				flash: {
+					"0%, 50%, 100%": {
+							opacity: "1"
+					},
+					"25%, 75%": {
+							opacity: "0"
+					},
+			},
 			},
 			animation: {
 				'slide-up-in': 'slide-up-in .5s ease-in-out forwards',
@@ -73,6 +81,7 @@ export default {
 				'browse-in': 'browse-in 0.4s ease-in-out 0.25s 1 forwards',
 				'flip-in': 'flip-in 0.5s ease-out 0.25s 1 forwards',
 				'flip-out': 'flip-out 0.5s ease-in 0.25s 1 forwards',
+				flash: 'flash 0.6s ease-in-out 0.25s 1',
 			}
 		}
 	},

@@ -19,7 +19,7 @@
   "
 >
 	<div class="relative flex h-[20%] md:h-[36%] justify-between items-center">
-		<h1 class="text-3xl font-bold">Poke Match</h1>
+		<h1 class="text-3xl font-bold leading-none">Poke <br/> Match</h1>
 		<button on:click={changeColorScheme} class="py-4 text-neutral-800 dark:text-white">
 			<Icon name={$preferred === 'dark' ? 'dark' : 'light'} fill="parent" />
 		</button>
