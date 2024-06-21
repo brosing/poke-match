@@ -14,7 +14,7 @@
 </script>
 
 <button
-	class={`relative m-0 ${isMatch ? 'animate-flash' : ''}`}
+	class={`relative m-0 flex-1 ${isMatch ? 'animate-flash' : ''}`}
 	on:click={() => rotateCard(pokemon)}
 	disabled={isRotated || onValidateCard}
 >
@@ -22,7 +22,7 @@
 		class={`z-0 absolute top-0 left-0 h-full w-full bg-neutral-200 dark:bg-neutral-200 rounded-lg ${isRotated ? 'animate-flip-in' : 'animate-flip-out'}`}
 	/>
 	<div
-		class={`p-3 bg-neutral-200 dark:bg-neutral-200 h-full rounded-lg flex flex-col items-center justify-center gap-1 [backface-visibility:hidden] [transform:rotateY(-180deg)] ${isRotated ? 'animate-flip-in' : 'animate-flip-out'}`}
+		class={`p-3 bg-neutral-200 dark:bg-neutral-200 rounded-lg flex flex-col items-center justify-center gap-1 [backface-visibility:hidden] [transform:rotateY(-180deg)] ${isRotated ? 'animate-flip-in' : 'animate-flip-out'}`}
 	>
 		<img
 			alt={pokemon.name}
