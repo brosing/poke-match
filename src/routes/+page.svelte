@@ -1,8 +1,15 @@
 <script lang="ts">
-	import { onMount } from 'svelte';
 	import { getColorSchemeContext } from '$lib/contexts/color-scheme';
-	import { localStorageStore } from '../utils/local-storage';
+  import { PUBLIC_API_URL } from '$env/static/public';
 	import Icon from '../components/icon.svelte';
+	import PokemonCardWrapper from '../components/pokemon-card-wrapper.svelte';
+
+	const colorSchemeStore = getColorSchemeContext();
+	$: preferred = colorSchemeStore.preferred;
+	const changeColorScheme = () => {
+		const color = $preferred === 'dark' ? 'light' : 'dark';
+		colorSchemeStore.change(color);
+	};
 
 	const query = `
     query getUnevolvedPokmons {
@@ -12,48 +19,28 @@
       }
     }
   `;
-
-	const colorSchemeStore = getColorSchemeContext();
-	$: preferred = colorSchemeStore.preferred;
-
-	const changeColorScheme = () => {
-		const color = $preferred === 'dark' ? 'light' : 'dark';
-		colorSchemeStore.change(color);
-	};
-
-  const pokemons = localStorageStore<App.Pokemon[]>('pokemons', []);
 	async function fetchUnevolvedPokmons() {
-		const result = await fetch('https://beta.pokeapi.co/graphql/v1beta', {
+		const result = await fetch(PUBLIC_API_URL, {
 			method: 'POST',
 			body: JSON.stringify({ query })
 		});
 
 		return await result.json();
 	}
-	onMount(async () => {
-    // NOTE sync with localStorage
-    pokemons?.subscribe(async (data) => {
-      if (data.length === 0) {
-        const result = await fetchUnevolvedPokmons();
-        pokemons?.set(result.data);
-      }
-    })
-	});
 </script>
 
 <div
 	class="
-  flex flex-col w-screen h-screen
+  flex flex-col max-w-screen-sm h-screen p-4 md:px-16 mx-auto
   bg-white dark:bg-neutral-800 text-neutral-800 dark:text-white transition-colors
   "
 >
-	<div class="relative">
-		<h1 class="text-3xl font-bold m-7 text-center">Poke Match</h1>
-		<button
-			on:click={changeColorScheme}
-			class="absolute right-2 top-4 p-5 text-neutral-800 dark:text-white"
-		>
+	<div class="relative flex h-[20%] md:h-[36%] justify-between items-center">
+		<h1 class="text-3xl font-bold">Poke Match</h1>
+		<button on:click={changeColorScheme} class="py-4 text-neutral-800 dark:text-white">
 			<Icon name={$preferred === 'dark' ? 'dark' : 'light'} fill="parent" />
 		</button>
 	</div>
+
+	<PokemonCardWrapper {fetchUnevolvedPokmons} />
 </div>
