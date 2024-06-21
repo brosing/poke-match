@@ -5,6 +5,9 @@
 	import { localStorageStore } from "../utils/local-storage";
 	import { queryUnevolvedPokmons } from "../utils/query";
 
+	export let startTimer;
+	export let stopTimer;
+
 	const pokemons = localStorageStore<Omit<App.Pokemon, 'identifier'>[]>('pokemons', []);
 	let randomPokemons: App.Pokemon[] = [];
 	function shufflePokemon(data: Omit<App.Pokemon, 'identifier'>[]) {
@@ -36,6 +39,15 @@
 	let lastMatchCardID: string = ''; // prevent flash effect on prev match cards
 	let onValidateCard = false // To disabled interaction
 
+	$: if (rotatedCards.length > 0) {
+		console.log('ro', rotatedCards)
+		startTimer();
+
+		if (rotatedCards.length === randomPokemons.length) {
+			stopTimer();
+		}
+	}
+
 	function rotateCard(poke: App.Pokemon) {
 		rotatedCards = [...rotatedCards, poke];
 	}
@@ -59,14 +71,14 @@
 				}
 			}
 			onValidateCard = false
-		}, 1000);
+		}, 800);
 	}
 	$: if (rotatedCards.length > 0 && rotatedCards.length % 2 == 0) {
 		validateCards()
 	}
 </script>
 
-<div class="grid grid-cols-3 md:grid-cols-4 md:mb-16 gap-[2px] md:gap-1 flex-1">
+<div class="grid grid-cols-3 md:grid-cols-4 md:mb-8 gap-[2px] md:gap-1 flex-1">
   {#each randomPokemons as pokemon (pokemon.identifier)}
     <PokemonCard {pokemon} {rotateCard} {rotatedCards} {onValidateCard} {matchCards} />
   {/each}
