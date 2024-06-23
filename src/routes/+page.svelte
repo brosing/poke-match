@@ -1,11 +1,14 @@
 <script lang="ts">
+	'@hmr:keep-all'
+
 	import { onMount } from 'svelte';
+	import { quintOut } from 'svelte/easing';
 	import { getColorSchemeContext } from '$lib/contexts/color-scheme';
-	import PokemonCards from '../components/pokemon-cards.svelte';
 	import { getLeaderboardContext } from '$lib/contexts/leaderboard';
+	import PokemonCards from '../components/pokemon-cards.svelte';
 	import { fade, slide } from 'svelte/transition';
 	import Icon from '../components/icon.svelte';
-	import { quintOut } from 'svelte/easing';
+	import ModalAbout from '../components/about.svelte';
 
 	const colorSchemeStore = getColorSchemeContext();
 	$: preferred = colorSchemeStore.preferred;
@@ -52,6 +55,7 @@
 	};
 
 	$: finish = interval === null && elapsed > 0
+	let showModal = false;
 </script>
 
 <div
@@ -88,9 +92,11 @@
 			<p>{$preferred === 'dark' ? 'Dark' : 'Light'} Mode</p>
 		</button>
 		<p class={interval ? 'animate-pulse font-bold' : ''}>{formatTime(elapsed)}</p>
-		<a href="/about" class="py-4">
+		<button class="py-4" on:click={() => (showModal = true)}>
 			<!-- <Icon name="refresh" fill="parent" class="h-4 w-4" /> -->
 			<p>About ?</p>
-		</a>
+		</button>
 	</div>
+
+	<ModalAbout bind:showModal/>
 </div>

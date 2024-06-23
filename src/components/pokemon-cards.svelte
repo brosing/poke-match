@@ -1,4 +1,6 @@
 <script lang="ts">
+	'@hmr:keep-all'
+
 	import { onMount } from "svelte";
 	import { shuffle } from "../utils/helper";
 	import PokemonCard from "./pokemon-card.svelte";
