@@ -1,6 +1,4 @@
 <script lang="ts">
-	'@hmr:keep-all'
-
 	import { onMount } from 'svelte';
 	import { quintOut } from 'svelte/easing';
 	import { getColorSchemeContext } from '$lib/contexts/color-scheme';

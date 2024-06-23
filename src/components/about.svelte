@@ -1,6 +1,5 @@
 <script lang="ts">
 	import { browser } from '$app/environment';
-	import { goto } from '$app/navigation';
 	import Icon from '../components/icon.svelte';
 	import { localStorageStore } from '../utils/local-storage';
 
