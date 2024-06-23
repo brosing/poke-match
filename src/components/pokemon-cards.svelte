@@ -40,7 +40,6 @@
 	let onValidateCard = false // To disabled interaction
 
 	$: if (rotatedCards.length > 0) {
-		console.log('ro', rotatedCards)
 		startTimer();
 
 		if (rotatedCards.length === randomPokemons.length) {

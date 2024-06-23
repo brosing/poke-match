@@ -29,12 +29,12 @@
 <div
 	class="relative flex flex-col h-screen w-screen justify-center items-center text-neutral-800 dark:text-white gap-2"
 >
-	<button
-		on:click={handleCloseButton}
+	<a
+		href="/"
 		class="absolute top-4 right-4 text-neutral-800 dark:text-white"
 	>
 		<Icon name="x" class="h-4 w-4" />
-	</button>
+	</a>
 	<h2 class="text-xl font-bold mb-4">About</h2>
 	<p>Credit to <a href="https://beta.pokeapi.co" class="underline">Poke API</a></p>
 	<p>Your fastest time is: <span class="font-bold">{fastestTime}</span></p>

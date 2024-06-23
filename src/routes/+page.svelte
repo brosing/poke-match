@@ -3,17 +3,15 @@
 	import { getColorSchemeContext } from '$lib/contexts/color-scheme';
 	import PokemonCards from '../components/pokemon-cards.svelte';
 	import { getLeaderboardContext } from '$lib/contexts/leaderboard';
+	import { fade, slide } from 'svelte/transition';
+	import Icon from '../components/icon.svelte';
+	import { quintOut } from 'svelte/easing';
 
 	const colorSchemeStore = getColorSchemeContext();
 	$: preferred = colorSchemeStore.preferred;
 	function changeColorScheme() {
 		const color = $preferred === 'dark' ? 'light' : 'dark';
 		colorSchemeStore.change(color);
-	};
-
-	let refresh: number;
-	const reloadCards = () => {
-		refresh = Math.random();
 	};
 
 	let leaderboard = getLeaderboardContext();
@@ -29,7 +27,6 @@
 	};
 	function stopTimer() {
 		const newTime = formatTime(elapsed)
-		console.log('newTime', newTime)
 		leaderboard?.update(data => [...data, newTime])
 		clearInterval(interval);
 		interval = null;
@@ -40,11 +37,21 @@
 		};
 	});
 
+	let refresh: number = 0;
+	const reloadCards = () => {
+		refresh = Math.random();
+		clearInterval(interval);
+		interval = null;
+		elapsed = 0;
+	};
+
 	function formatTime(time: number) {
 		const seconds = Math.floor((time / 1000) % 60);
 		const minutes = Math.floor((time / (1000 * 60)) % 60);
 		return `${minutes < 10 ? `0${minutes}` : minutes}:${seconds < 10 ? `0${seconds}` : seconds}`;
 	};
+
+	$: finish = interval === null && elapsed > 0
 </script>
 
 <div
@@ -53,9 +60,20 @@
   bg-white dark:bg-neutral-800 text-neutral-800 dark:text-white transition-colors
   "
 >
-	<div class="relative flex flex-col h-[24%] md:h-[36%] justify-center items-center">
-		<h1 class="text-3xl font-bold leading-none">Poke Match</h1>
-		<p class="opacity-70 mt-1">Random Pokemon to Match!</p>
+	<div class="relative flex flex-row h-[24%] md:h-[36%] items-center transition-all justify-between">
+		<div>
+			<h1 class="text-3xl font-bold leading-none mb-1">Poke Match</h1>
+			{#if (finish)}
+				<p class="font-medium" transition:slide={{ duration: 300, easing: quintOut, axis: 'y' }}>Congratulation!</p>
+			{:else}
+				<p class="opacity-70" transition:slide={{ duration: 300, delay: 100, easing: quintOut, axis: 'y' }}>Random Pokemons to Match!</p>
+			{/if}
+		</div>
+		{#if (finish)}
+			<button transition:fade={{ duration: 800 }} class="text-neutral-800 dark:text-white px-4" on:click={reloadCards}>
+				<Icon name="reload" class="h-4 w-4" />
+			</button>
+		{/if}
 	</div>
 
 	{#key refresh}
