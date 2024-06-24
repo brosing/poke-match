@@ -1,6 +1,5 @@
 <script lang="ts">
 	import { PUBLIC_IMAGE_URL } from '$env/static/public';
-	import fallbackImage from '$lib/assets/ball.png';
 
 	export let pokemon: App.Pokemon;
 	export let rotateCard: (poke: App.Pokemon) => void;
@@ -16,6 +15,7 @@
 	$: if (isRotated) {
 		isFirstRotated = true;
 	}
+	const fallbackImage = '/images/ball.png';
 	const handleError = (e) => {
 		e.target.src = fallbackImage;
 	};
@@ -46,9 +46,9 @@
 		<img
 			alt="poke ball"
 			src={fallbackImage}
-			class={`w-3/4 h-auto scale-90 ${isLoaded ? 'invisible' : 'bg-neutral-200'}`}
+			class={`w-3/4 h-auto scale-75 ${isLoaded ? 'invisible' : 'bg-neutral-200'}`}
 		/>
 		
-		<p class="z-10 text-neutral-700 text-sm font-medium capitalize">{pokemon.name}</p>
+		<p class="z-10 text-black opacity-50 text-sm font-bold capitalize mt-1 md:mt-3">{pokemon.name}</p>
 	</div>
 </button>

@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { onMount } from "svelte";
-	import { shuffle } from "../utils/helper";
 	import PokemonCard from "./pokemon-card.svelte";
+	import { shuffle } from "../utils/helper";
 	import { localStorageStore } from "../utils/local-storage";
 	import { queryUnevolvedPokmons } from "../utils/query";
 
@@ -32,7 +32,6 @@
 			randomPokemons = shufflePokemon(data);
 		});
 	});
-
 	
 	let rotatedCards: App.Pokemon[] = [];
 	let matchCards: App.Pokemon[] = []; // add flash effect on match cards
@@ -77,7 +76,7 @@
 	}
 </script>
 
-<div class="grid grid-cols-3 md:grid-cols-4 md:mb-8 gap-[2px] md:gap-1 flex-1">
+<div class="grid grid-cols-3 md:grid-cols-4 flex-1 md:flex-[0] md:mb-4 gap-[2px] md:gap-1 md:min-h-[50%]">
   {#each randomPokemons as pokemon (pokemon.identifier)}
     <PokemonCard {pokemon} {rotateCard} {rotatedCards} {onValidateCard} {matchCards} />
   {/each}
