@@ -63,7 +63,7 @@
   "
 >
 	<div
-		class="relative flex flex-row h-[24%] md:h-[16%] items-center transition-all justify-between"
+		class="relative flex flex-1 flex-row items-center transition-all justify-between"
 	>
 		<div>
 			{#if finish}
@@ -99,14 +99,14 @@
 	{/key}
 
 	<div class="grid grid-cols-3 w-full items-center text-neutral-800 dark:text-white">
-		<button on:click={changeColorScheme} class="py-6 opacity-60 text-left">
+		<button on:click={changeColorScheme} class="py-4 opacity-60 text-left">
 			<!-- <Icon name={$preferred === 'dark' ? 'dark' : 'light'} fill="parent" class="h-4 w-4" /> -->
 			<p>{$preferred === 'dark' ? 'Dark' : 'Light'} Mode</p>
 		</button>
 		<p class={`text-center ${interval ? 'animate-pulse font-bold' : 'opacity-60'}`}>
 			{formatTime(elapsed)}
 		</p>
-		<button class="py-6 opacity-60 text-right" on:click={() => (showModal = true)}>
+		<button class="py-4 opacity-60 text-right" on:click={() => (showModal = true)}>
 			<!-- <Icon name="refresh" fill="parent" class="h-4 w-4" /> -->
 			<p>About ?</p>
 		</button>
