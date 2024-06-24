@@ -17,16 +17,16 @@
 		<div
 			id="splash"
 			class="
-			fixed top-0 left-0 flex flex-col w-screen h-screen justify-center items-center 
+			fixed top-0 left-0 bottom-0 right-0 flex flex-col justify-center items-center 
 			bg-neutral-800 text-white dark:bg-white dark:text-neutral-800 
-			[animation-delay:2s] animate-drop-out z-10
+			[animation-delay:2s] animate-drop-out z-10 transition-colors
 			"
 		>
 			<h1 class="text-7xl font-bold mb-4 animate-slide-up-in">Poke Match</h1>
 			<p class="text-xl opacity-0 [animation-delay:0.5s] animate-slide-up-in">Memory Match Game</p>
 		</div>
 		<!-- hydration zone -->
-		<div class="w-screen h-screen opacity-0 [animation-delay:2.5s] animate-browse-in bg-white dark:bg-neutral-800">
+		<div class="opacity-0 [animation-delay:2.5s] animate-browse-in bg-white dark:bg-neutral-800">
 			%sveltekit.body%
 		</div>
 	</body>

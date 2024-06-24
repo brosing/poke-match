@@ -58,8 +58,8 @@
 
 <div
 	class="
-  flex flex-col sm:max-w-screen-sm w-full h-full p-4 pb-0 md:px-16 mx-auto md:justify-center
-  text-neutral-800 dark:text-white transition-colors
+  flex flex-col h-dvh w-screen md:max-w-screen-sm p-4 pb-0 md:px-16 md:mx-auto md:justify-center
+  text-neutral-800 dark:text-white
   "
 >
 	<div
