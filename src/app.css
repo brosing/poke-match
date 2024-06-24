@@ -4,7 +4,7 @@
 
 @font-face {
   font-family: "Orange Kid";
-  src: url("/fonts/Orange-Kid.otf");
+  src: url("$lib/fonts/Orange-Kid.otf");
   font-display: swap;
 }
 
