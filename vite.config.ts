@@ -6,13 +6,29 @@ export default defineConfig({
 	plugins: [
 		sveltekit(),
 		SvelteKitPWA({
-			includeAssets: ['logo.jpg', 'apple-touch-icon.png', 'images/ball.png'],
+			includeAssets: ['logo.jpg', 'favicon.ico', 'apple-touch-icon.png', 'images/ball.png'],
 			manifest: {
         name: 'Poke Match',
         short_name: 'PokeMatch',
         description: 'Memory Match Game with Pokemons',
         theme_color: '#ffffff',
-        icons: []
+        icons: [
+          {
+            src: 'pwa-64x64.png',
+            sizes: '64x64',
+            type: 'image/png'
+          },
+          {
+            src: 'pwa-192x192.png',
+            sizes: '192x192',
+            type: 'image/png'
+          },
+          {
+            src: 'pwa-512x512.png',
+            sizes: '512x512',
+            type: 'image/png'
+          }
+        ]
       }
 		})
 	]
