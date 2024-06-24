@@ -1,13 +1,10 @@
 
 /// <reference types="@sveltejs/kit" />
 import { build, files, version } from '$service-worker';
-import { dev } from '$app/environment';
 
 if ('serviceWorker' in navigator) {
 	addEventListener('load', function () {
-		navigator.serviceWorker.register('./service-worker.js', {
-			type: dev ? 'module' : 'classic'
-		});
+		navigator.serviceWorker.register('./service-worker.js');
 	});
 }
 
@@ -79,8 +76,6 @@ self.addEventListener('fetch', (event) => {
 				return response;
 			}
 
-			// if there's no cache, then just error out
-			// as there is nothing we can do to respond to this request
 			throw err;
 		}
 	}
