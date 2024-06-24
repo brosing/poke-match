@@ -12,7 +12,7 @@ export default {
 				'drop-out': {
 					'0%': {
 						opacity: '1',
-						transform: 'scale(1.2)',
+						transform: 'scale(1)',
 						animationTimingFunction: 'cubic-bezier(0.34, 1.61, 0.7, 1)',
 						'border-radius': 80
 					},
@@ -32,11 +32,6 @@ export default {
 						transform: 'scale(0.8) translateZ(0px)',
 						zIndex: '-1',
 						opacity: '0.7'
-					},
-					'80%': {
-						transform: 'scale(1.05) translateZ(0px)',
-						zIndex: '1',
-						opacity: '1'
 					},
 					'100%': {
 						transform: 'scale(1) translateZ(0px)',
