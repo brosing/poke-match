@@ -31,12 +31,12 @@
 	bind:this={dialog}
 	on:close={() => (showModal = false)}
 	on:click|self={() => dialog.close()}
-	class="h-1/2 w-3/4 rounded-xl bg-white dark:bg-neutral-800 text-neutral-800 dark:text-white backdrop:bg-black backdrop:bg-opacity-70"
+	class="h-fit w-3/4 rounded-xl bg-white dark:bg-neutral-800 text-neutral-800 dark:text-white backdrop:bg-black backdrop:bg-opacity-70"
 >
 	<!-- svelte-ignore a11y-no-static-element-interactions -->
 	<div
 		on:click|stopPropagation
-		class="h-full gap-2 p-4 flex flex-col justify-center items-center relative text-lg"
+		class="gap-2 p-4 pb-0 flex flex-col justify-center items-center relative text-lg"
 	>
 		<h2 class="text-5xl font-bold mb-4">About</h2>
 		<button
@@ -45,11 +45,17 @@
 		>
 			<Icon name="x" class="h-4 w-4" />
 		</button>
+
 		<p>Credit to <a href="https://beta.pokeapi.co" class="underline">Poke API</a></p>
 		<p>Your fastest time is: <span class="font-bold">{fastestTime}</span></p>
 		<button class="flex gap-2 mt-8" on:click={sendEmail}>
 			Give Feedback <Icon name="email" class="h-4 w-4 -bottom-1 relative" />
 		</button>
+
+
+		<div class="p-4 border border-neutral-800 dark:border-white rounded-lg text-center my-4">
+			<p>This web is installable to your Mobile Home Screen. Tap share / options then "Add to Home Screen"</p>
+		</div>
 	</div>
 </dialog>
 
