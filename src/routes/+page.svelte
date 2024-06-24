@@ -58,7 +58,7 @@
 
 <div
 	class="
-  flex flex-col max-w-screen-sm h-screen p-4 pb-0 md:px-16 mx-auto md:justify-center
+  flex flex-col sm:max-w-screen-sm w-full h-full p-4 pb-0 md:px-16 mx-auto md:justify-center
   text-neutral-800 dark:text-white transition-colors
   "
 >

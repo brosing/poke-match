@@ -11,6 +11,7 @@ export default defineConfig({
         name: 'Poke Match',
         short_name: 'PokeMatch',
         description: 'Memory Match Game with Pokemons',
+				display: 'standalone',
         theme_color: '#ffffff',
         icons: [
           {
