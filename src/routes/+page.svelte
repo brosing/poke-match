@@ -63,7 +63,7 @@
   "
 >
 	<div
-		class="relative flex flex-1 flex-row items-center transition-all justify-between"
+		class="relative py-4 md:py-10 flex flex-1 md:flex-grow-0 flex-row items-center transition-all justify-between"
 	>
 		<div>
 			{#if finish}
