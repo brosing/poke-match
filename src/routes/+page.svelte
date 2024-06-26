@@ -103,7 +103,7 @@
 			<!-- <Icon name={$preferred === 'dark' ? 'dark' : 'light'} fill="parent" class="h-4 w-4" /> -->
 			<p>{$preferred === 'dark' ? 'Dark' : 'Light'} Mode</p>
 		</button>
-		<p class={`text-center ${interval ? 'animate-pulse font-bold' : 'opacity-60'}`}>
+		<p class={`text-center ${interval ? 'animate-pulse font-bold' : ''} ${finish ? 'text-xl font-bold ' : 'opacity-60'}`}>
 			{formatTime(elapsed)}
 		</p>
 		<button class="py-4 opacity-60 text-right" on:click={() => (showModal = true)}>
