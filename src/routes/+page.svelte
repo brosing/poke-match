@@ -7,6 +7,7 @@
 	import { fade, slide } from 'svelte/transition';
 	import Icon from '../components/icon.svelte';
 	import ModalAbout from '../components/about.svelte';
+	import { browser } from '$app/environment';
 
 	const colorSchemeStore = getColorSchemeContext();
 	$: preferred = colorSchemeStore.preferred;
@@ -54,6 +55,8 @@
 
 	$: finish = interval === null && elapsed > 0;
 	let showModal = false;
+
+	const sat = browser ? getComputedStyle(document.documentElement).getPropertyValue("--sat") : '0px'
 </script>
 
 <div
@@ -61,6 +64,7 @@
   flex flex-col h-dvh w-screen md:max-w-screen-sm p-4 pb-0 md:px-16 md:mx-auto md:justify-center
   text-neutral-800 dark:text-white
   "
+	style={`margin-bottom: ${sat}`}
 >
 	<div
 		class="relative py-4 md:py-10 flex flex-1 md:flex-grow-0 flex-row items-center transition-all justify-between"
@@ -68,7 +72,7 @@
 		<div>
 			{#if finish}
 				<p
-					class="text-5xl font-bold"
+					class="text-5xl font-bold animate-flash-infinite"
 					transition:slide={{ delay: 700, duration: 300, easing: quintOut, axis: 'y' }}
 				>
 					Congratulation!

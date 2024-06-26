@@ -62,13 +62,21 @@ export default {
 					}
 				},
 				flash: {
-					"0%, 50%, 100%": {
-							opacity: "1"
+					'0%, 50%, 100%': {
+						opacity: '1'
 					},
-					"25%, 75%": {
-							opacity: "0"
+					'25%, 75%': {
+						opacity: '0'
+					}
+				},
+				'flash-infinite': {
+					'0%, 80%, 90%, 100%': {
+						opacity: '1'
 					},
-			},
+					'87%, 97%': {
+						opacity: '0'
+					}
+				},
 			},
 			animation: {
 				'slide-up-in': 'slide-up-in .5s ease-in-out forwards',
@@ -77,6 +85,7 @@ export default {
 				'flip-in': 'flip-in 0.5s ease-out 0.25s 1 forwards',
 				'flip-out': 'flip-out 0.5s ease-in 0.25s 1 forwards',
 				flash: 'flash 0.6s ease-in-out 0.25s 1',
+				'flash-infinite': 'flash-infinite 3s linear infinite'
 			}
 		}
 	},
