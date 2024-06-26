@@ -33,7 +33,7 @@
 		if (noAlpha) {
 			// set RGB only
 			const rgb = noAlpha.split(',').slice(0, -1).join(',');
-			backgroundColor = `rgba(${rgb}, 0.3)`;
+			backgroundColor = `rgba(${rgb}, 0.2)`;
 		}
 	};
 </script>
