@@ -39,6 +39,12 @@
 		const bottomSpace = getComputedStyle(document.documentElement).getPropertyValue("--sab")
 		if (bottomSpace) {
 			sab = bottomSpace
+		} else {
+			// handle if sab not found
+			const isPWA = window.matchMedia('(display-mode: standalone)').matches
+			if (isPWA) {
+				sab = '24px'
+			}
 		}
 
 		return () => {
