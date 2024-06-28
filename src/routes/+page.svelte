@@ -42,7 +42,7 @@
 		} else {
 			// @ts-ignore, handle if sab not found
 			if (window.navigator.standalone) {
-				sab = '32px'
+				sab = '34px'
 			}
 		}
 
@@ -72,9 +72,10 @@
 
 <div
 	class={`
-  flex flex-col h-dvh w-screen md:max-w-screen-sm p-4 pb-[${sab}] md:px-16 md:mx-auto md:justify-center
+  flex flex-col h-dvh w-screen md:max-w-screen-sm p-4 md:px-16 md:mx-auto md:justify-center
   text-neutral-800 dark:text-white
   `}
+	style={`padding-bottom: ${sab};`}
 >
 	<div
 		class="relative py-4 md:py-10 flex flex-1 md:flex-grow-0 flex-row items-center transition-all justify-between"
