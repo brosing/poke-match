@@ -40,10 +40,9 @@
 		if (bottomSpace) {
 			sab = bottomSpace
 		} else {
-			// handle if sab not found
-			const isPWA = window.matchMedia('(display-mode: standalone)').matches
-			if (isPWA) {
-				sab = '24px'
+			// @ts-ignore, handle if sab not found
+			if (window.navigator.standalone) {
+				sab = '32px'
 			}
 		}
 
