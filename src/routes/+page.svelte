@@ -16,6 +16,7 @@
 		colorSchemeStore.change(color);
 	}
 
+	let sab = '0px'
 	let leaderboard = getLeaderboardContext();
 	let elapsed = 0;
 	let interval: NodeJS.Timeout;
@@ -34,7 +35,14 @@
 		interval = null;
 	}
 	onMount(() => {
+		// handle bottom space "sab"
+		const bottomSpace = getComputedStyle(document.documentElement).getPropertyValue("--sab")
+		if (bottomSpace) {
+			sab = bottomSpace
+		}
+
 		return () => {
+			// handle game time counter "elapsed & interval"
 			clearInterval(interval);
 		};
 	});
@@ -55,8 +63,6 @@
 
 	$: finish = interval === null && elapsed > 0;
 	let showModal = false;
-
-	const sat = browser ? getComputedStyle(document.documentElement).getPropertyValue("--sat") : '0px'
 </script>
 
 <div
@@ -64,7 +70,7 @@
   flex flex-col h-dvh w-screen md:max-w-screen-sm p-4 pb-0 md:px-16 md:mx-auto md:justify-center
   text-neutral-800 dark:text-white
   "
-	style={`margin-bottom: ${sat}`}
+	style={`margin-bottom: ${sab}`}
 >
 	<div
 		class="relative py-4 md:py-10 flex flex-1 md:flex-grow-0 flex-row items-center transition-all justify-between"
