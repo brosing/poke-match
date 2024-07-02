@@ -6,7 +6,7 @@ export default defineConfig({
 	plugins: [
 		sveltekit(),
 		SvelteKitPWA({
-			includeAssets: ['favicon.ico', 'apple-touch-icon.jpg', 'images/ball.png'],
+			includeAssets: ['favicon.ico', 'apple-touch-icon.png', 'images/ball.png'],
 			manifest: {
         name: 'Poke Match',
         short_name: 'PokeMatch',

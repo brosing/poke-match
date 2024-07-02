@@ -7,7 +7,6 @@
 	import { fade, slide } from 'svelte/transition';
 	import Icon from '../components/icon.svelte';
 	import ModalAbout from '../components/about.svelte';
-	import { browser } from '$app/environment';
 
 	const colorSchemeStore = getColorSchemeContext();
 	$: preferred = colorSchemeStore.preferred;
