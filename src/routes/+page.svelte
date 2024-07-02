@@ -126,5 +126,5 @@
 		</button>
 	</div>
 
-	<ModalAbout bind:showModal />
+	<ModalAbout bind:showModal bind:sab />
 </div>
