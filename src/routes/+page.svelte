@@ -10,9 +10,6 @@
 
 	const colorSchemeStore = getColorSchemeContext();
 	$: preferred = colorSchemeStore.preferred;
-	$: {
-		console.log('preferred', $preferred)
-	}
 	function changeColorScheme() {
 		const color = $preferred === 'dark' ? 'light' : 'dark';
 		colorSchemeStore.change(color);
@@ -103,7 +100,7 @@
 		{#if finish}
 			<button
 				transition:fade={{ duration: 800 }}
-				class="text-neutral-800 dark:text-white px-4"
+				class="text-neutral-800 dark:text-white px-4 -mb-2"
 				on:click={reloadCards}
 			>
 				<Icon name="reload" class="h-4 w-4" />

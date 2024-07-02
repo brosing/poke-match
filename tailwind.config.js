@@ -99,5 +99,5 @@ export default {
 	},
 	darkMode: '',
   // eslint-disable-next-line @typescript-eslint/no-require-imports
-  plugins: [require('postcss-color-scheme/lib/tailwind')],
+  plugins: [require('postcss-color-scheme/tailwind')],
 };

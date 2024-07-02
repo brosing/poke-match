@@ -44,7 +44,7 @@
 	disabled={isRotated || onValidateCard}
 >
 	<div
-		class={`z-0 absolute top-0 left-0 h-full w-full bg-neutral-200 dark:bg-neutral-400 rounded-lg ${isFirstRotated ? (isRotated ? 'animate-flip-in-gone' : 'animate-flip-out-visible') : ''}`}
+		class={`z-0 absolute top-0 left-0 h-full w-full bg-neutral-200 dark:bg-neutral-500 rounded-lg ${isFirstRotated ? (isRotated ? 'animate-flip-in-gone' : 'animate-flip-out-visible') : ''}`}
 	/>
 	<div
 		class={`relative p-3 h-full rounded-lg flex flex-col items-center justify-center gap-1 [backface-visibility:hidden] [transform:rotateY(-180deg)] ${isFirstRotated ? (isRotated ? 'animate-flip-in' : 'animate-flip-out') : ''}`}
