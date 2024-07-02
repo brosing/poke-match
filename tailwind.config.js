@@ -97,6 +97,7 @@ export default {
 			}
 		}
 	},
-	plugins: [],
-	darkMode: ['selector', '[data-color-scheme="dark"]']
+	darkMode: '',
+  // eslint-disable-next-line @typescript-eslint/no-require-imports
+  plugins: [require('postcss-color-scheme/lib/tailwind')],
 };

@@ -10,6 +10,9 @@
 
 	const colorSchemeStore = getColorSchemeContext();
 	$: preferred = colorSchemeStore.preferred;
+	$: {
+		console.log('preferred', $preferred)
+	}
 	function changeColorScheme() {
 		const color = $preferred === 'dark' ? 'light' : 'dark';
 		colorSchemeStore.change(color);
