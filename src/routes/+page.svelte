@@ -39,8 +39,7 @@
 		if (bottomSpace) {
 			sab = bottomSpace
 		} else {
-			// @ts-ignore, handle if sab not found
-			if (window.navigator.standalone) {
+			if (window.matchMedia('(display-mode: standalone)').matches) {
 				sab = '34px'
 			}
 		}
