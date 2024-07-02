@@ -44,7 +44,7 @@
 	disabled={isRotated || onValidateCard}
 >
 	<div
-		class={`z-0 absolute top-0 left-0 h-full w-full bg-neutral-200 rounded-lg ${isFirstRotated ? (isRotated ? 'animate-flip-in' : 'animate-flip-out') : ''}`}
+		class={`z-0 absolute top-0 left-0 h-full w-full bg-neutral-200 dark:bg-neutral-400 rounded-lg ${isFirstRotated ? (isRotated ? 'animate-flip-in-gone' : 'animate-flip-out-visible') : ''}`}
 	/>
 	<div
 		class={`relative p-3 h-full rounded-lg flex flex-col items-center justify-center gap-1 [backface-visibility:hidden] [transform:rotateY(-180deg)] ${isFirstRotated ? (isRotated ? 'animate-flip-in' : 'animate-flip-out') : ''}`}
@@ -69,7 +69,7 @@
 			class={`w-3/4 h-auto scale-75 ${isLoaded ? 'invisible' : 'bg-neutral-200'}`}
 		/>
 
-		<p class="z-10 text-black opacity-50 text-sm font-bold capitalize mt-1 md:mt-3">
+		<p class="z-10 text-black dark:text-white opacity-50 text-md font-bold capitalize mt-1 md:mt-3">
 			{pokemon.name}
 		</p>
 	</div>

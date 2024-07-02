@@ -9,6 +9,16 @@ export default {
 					'0%': { opacity: 0, transform: 'translateY(100%)' },
 					'100%': { opacity: 1, transform: 'translateY(0)' }
 				},
+				'to-gone': {
+					'0%': { opacity: 1 },
+					'50%': { opacity: 0 },
+					'100%': { opacity: 0 }
+				},
+				'to-visible': {
+					'0%': { opacity: 0 },
+					'50%': { opacity: 1 },
+					'100%': { opacity: 1 }
+				},
 				'drop-out': {
 					'0%': {
 						opacity: '1',
@@ -43,9 +53,6 @@ export default {
 					'0%': {
 						transform: 'rotateY(-180deg)'
 					},
-					'50%': {
-						transform: 'rotateY(-90deg)'
-					},
 					'100%': {
 						transform: 'rotateY(0deg)'
 					}
@@ -53,9 +60,6 @@ export default {
 				'flip-out': {
 					'0%': {
 						transform: 'rotateY(0)'
-					},
-					'50%': {
-						transform: 'rotateY(-90deg)'
 					},
 					'100%': {
 						transform: 'rotateY(-180deg)'
@@ -76,7 +80,7 @@ export default {
 					'87%, 97%': {
 						opacity: '0'
 					}
-				},
+				}
 			},
 			animation: {
 				'slide-up-in': 'slide-up-in .5s ease-in-out forwards',
@@ -85,7 +89,11 @@ export default {
 				'flip-in': 'flip-in 0.5s ease-out 0.25s 1 forwards',
 				'flip-out': 'flip-out 0.5s ease-in 0.25s 1 forwards',
 				flash: 'flash 0.6s ease-in-out 0.25s 1',
-				'flash-infinite': 'flash-infinite 3s linear infinite'
+				'flash-infinite': 'flash-infinite 3s linear infinite',
+				'flip-in-gone':
+					'flip-in 0.5s ease-out 0.25s 1 forwards, to-gone 0.5s ease-out 0.25s 1 forwards',
+				'flip-out-visible':
+					'flip-out 0.5s ease-in 0.25s 1 forwards, to-visible 0.5s ease-out 0.25s 1 forwards'
 			}
 		}
 	},
