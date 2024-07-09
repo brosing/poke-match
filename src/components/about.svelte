@@ -5,11 +5,16 @@
 
 	export let showModal = false;
 	export let sab = '';
+	let showSAB = false;
 	let dialog: HTMLDialogElement;
 	$: if (dialog && showModal) dialog.showModal();
 
 	const leaderboard = localStorageStore<string[]>('leaderboard', []);
 	let fastestTime: string;
+
+	function toggleSAB() {
+		showSAB = !showSAB
+	}
 
 	leaderboard?.subscribe((data: string[]) => {
 		if (data[0]) {
@@ -48,8 +53,12 @@
 		</button>
 
 		<p>Credit to <a href="https://beta.pokeapi.co" class="underline">Poke API</a></p>
-		<p>Your fastest time is: <span class="font-bold">{fastestTime}</span></p>
+		<p on:dblclick={toggleSAB}>Your fastest time is: <span class="font-bold">{fastestTime}</span></p>
+		
+		{#if showSAB}
 		<p>sab: {sab}</p>
+		{/if}
+		
 		<button class="flex gap-2 mt-8" on:click={sendEmail}>
 			Give Feedback <Icon name="email" class="h-4 w-4 -bottom-1 relative" />
 		</button>
