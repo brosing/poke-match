@@ -8,6 +8,7 @@
 	import PokemonCards from '../components/pokemon-cards.svelte';
 	import Icon from '../components/icon.svelte';
 	import ModalAbout from '../components/about.svelte';
+	import successMp3 from '$lib/sound/success.mp3';
 	import { browser } from '$app/environment';
 
 	const colorSchemeStore = getColorSchemeContext();
@@ -61,6 +62,12 @@
 	};
 
 	$: finish = interval === null && elapsed > 0;
+	$: if (finish && browser) {
+		let successSound = new Audio(successMp3)
+		setTimeout(() => {
+			successSound.play()
+		}, 1200);
+	}
 	let showModal = false;
 </script>
 
@@ -78,14 +85,14 @@
 			{#if finish}
 				<p
 					class="text-5xl font-bold animate-flash-infinite"
-					transition:slide={{ delay: 700, duration: 300, easing: quintOut, axis: 'y' }}
+					transition:slide={{ delay: 1000, duration: 300, easing: quintOut, axis: 'y' }}
 				>
 					Congratulation!
 				</p>
 			{:else}
 				<h1
 					class="text-5xl font-bold"
-					transition:slide={{ delay: 800, duration: 300, easing: quintOut, axis: 'y' }}
+					transition:slide={{ delay: 1000, duration: 300, easing: quintOut, axis: 'y' }}
 				>
 					Poke Match
 				</h1>

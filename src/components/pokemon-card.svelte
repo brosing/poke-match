@@ -1,7 +1,12 @@
 <script lang="ts">
 	import { PUBLIC_IMAGE_URL } from '$env/static/public';
 	import { imageToRGBA } from '../utils/color';
+	import flipMp3 from '$lib/sound/flip.mp3';
+	import rightMp3 from '$lib/sound/right.mp3';
 
+	let flipSound = new Audio(flipMp3)
+	let rightSound = new Audio(rightMp3)
+	rightSound.volume = 0.4
 	export let pokemon: App.Pokemon;
 	export let rotateCard: (poke: App.Pokemon) => void;
 	export let rotatedCards: App.Pokemon[];
@@ -18,7 +23,17 @@
 	$: isRotated = findCurrentCard(rotatedCards);
 	$: if (isRotated) {
 		isFirstRotated = true;
+		flipSound.play()
 	}
+	$: if (isMatch) {
+		setTimeout(() => {
+			rightSound.play()
+		}, 200);
+		setTimeout(() => {
+			rightSound.play()
+		}, 700);
+	}
+
 	const fallbackImage = '/images/ball.png';
 	const handleError = (e: EventHandle) => {
 		// @ts-ignore
@@ -36,6 +51,7 @@
 			backgroundColor = `rgba(${rgb}, 0.2)`;
 		}
 	};
+
 </script>
 
 <button
