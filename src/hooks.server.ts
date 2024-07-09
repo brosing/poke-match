@@ -7,7 +7,7 @@ export const handle: Handle = async ({ event, resolve }) => {
   locals.colorScheme = (cookies.get(PUBLIC_COOKIE_COLOR_SCHEME) as App.ColorScheme) || 'system';
 
   const response = await resolve(event, {
-    transformPageChunk: ({ html }) => html.replace('%cookie-color-scheme%', event.locals.colorScheme)
+    transformPageChunk: ({ html }) => html.replace('%cookie-color-scheme%', locals.colorScheme)
   });
   return response;
 }

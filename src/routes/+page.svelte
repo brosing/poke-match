@@ -1,12 +1,14 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import { quintOut } from 'svelte/easing';
+	import { fade, slide } from 'svelte/transition';
 	import { getColorSchemeContext } from '$lib/contexts/color-scheme';
 	import { getLeaderboardContext } from '$lib/contexts/leaderboard';
+	import { formatTime, isPwa } from '../utils/common';
 	import PokemonCards from '../components/pokemon-cards.svelte';
-	import { fade, slide } from 'svelte/transition';
 	import Icon from '../components/icon.svelte';
 	import ModalAbout from '../components/about.svelte';
+	import { browser } from '$app/environment';
 
 	const colorSchemeStore = getColorSchemeContext();
 	$: preferred = colorSchemeStore.preferred;
@@ -15,7 +17,7 @@
 		colorSchemeStore.change(color);
 	}
 
-	let sab = '0px'
+	let sab = '0px';
 	let leaderboard = getLeaderboardContext();
 	let elapsed = 0;
 	let interval: NodeJS.Timeout;
@@ -33,16 +35,15 @@
 		clearInterval(interval);
 		interval = null;
 	}
+
 	onMount(() => {
 		// handle bottom space "sab"
-		const bottomSpace = getComputedStyle(document.documentElement).getPropertyValue("--sab")
+		const bottomSpace = getComputedStyle(document.documentElement).getPropertyValue('--sab');
 		if (bottomSpace) {
-			sab = bottomSpace
+			sab = bottomSpace;
 		} else {
-			// @ts-ignore, handle if sab not found
-			if (window.navigator.standalone || window.matchMedia('(display-mode: standalone)').matches) {
-				sab = '34px'
-			}
+			// check if current web is installed as PWA
+			if (isPwa()) sab = '34px';
 		}
 
 		return () => {
@@ -58,12 +59,6 @@
 		interval = null;
 		elapsed = 0;
 	};
-
-	function formatTime(time: number) {
-		const seconds = Math.floor((time / 1000) % 60);
-		const minutes = Math.floor((time / (1000 * 60)) % 60);
-		return `${minutes < 10 ? `0${minutes}` : minutes}:${seconds < 10 ? `0${seconds}` : seconds}`;
-	}
 
 	$: finish = interval === null && elapsed > 0;
 	let showModal = false;
@@ -92,7 +87,6 @@
 					class="text-5xl font-bold"
 					transition:slide={{ delay: 800, duration: 300, easing: quintOut, axis: 'y' }}
 				>
-					
 					Poke Match
 				</h1>
 			{/if}
@@ -114,17 +108,17 @@
 
 	<div class="grid grid-cols-3 w-full items-center text-neutral-800 dark:text-white">
 		<button on:click={changeColorScheme} class="py-4 opacity-60 text-left">
-			<!-- <Icon name={$preferred === 'dark' ? 'dark' : 'light'} fill="parent" class="h-4 w-4" /> -->
 			<p>{$preferred === 'dark' ? 'Dark' : 'Light'} Mode</p>
 		</button>
-		<p class={`text-center ${interval ? 'animate-pulse font-bold' : ''} ${finish ? 'text-xl font-bold ' : 'opacity-60'}`}>
+		<p
+			class={`text-center ${interval ? 'animate-pulse font-bold' : ''} ${finish ? 'text-xl font-bold ' : 'opacity-60'}`}
+		>
 			{formatTime(elapsed)}
 		</p>
 		<button class="py-4 opacity-60 text-right" on:click={() => (showModal = true)}>
-			<!-- <Icon name="refresh" fill="parent" class="h-4 w-4" /> -->
 			<p>About ?</p>
 		</button>
 	</div>
 
-	<ModalAbout bind:showModal bind:sab />
+	<ModalAbout bind:showModal />
 </div>

@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { onMount } from "svelte";
 	import PokemonCard from "./pokemon-card.svelte";
-	import { shuffle } from "../utils/helper";
+	import { shuffle } from "../utils/common";
 	import { localStorageStore } from "../utils/local-storage";
 	import { queryUnevolvedPokmons } from "../utils/query";
 
