@@ -43,7 +43,7 @@
 			sab = bottomSpace;
 		} else {
 			// check if current web is installed as PWA
-			if (isPwa()) sab = '34px';
+			if (isPwa()) sab = '24px';
 		}
 
 		return () => {
