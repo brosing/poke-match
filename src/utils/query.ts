@@ -9,11 +9,17 @@ query getUnevolvedPokmons {
 }
 `;
 
-export async function queryUnevolvedPokmons() {
+interface QueryResponse {
+  name: string
+  id: string
+}
+
+export async function queryUnevolvedPokmons(): Promise<QueryResponse> {
   const result = await fetch(PUBLIC_API_URL, {
     method: 'POST',
     body: JSON.stringify({ query })
   });
 
-  return await result.json();
+  const json = await result.json();
+  return json.data.pokemon_v2_pokemonspecies
 }

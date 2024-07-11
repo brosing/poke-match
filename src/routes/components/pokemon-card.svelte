@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { PUBLIC_IMAGE_URL } from '$env/static/public';
-	import { imageToRGBA } from '../utils/color';
+	import { getImageMostColor, findCurrentCard } from '$utils';
 	import flipMp3 from '$lib/sound/flip.mp3';
 	import rightMp3 from '$lib/sound/right.mp3';
 
@@ -8,7 +8,6 @@
 	let rightSound = new Audio(rightMp3)
 	rightSound.volume = 0.4
 	export let pokemon: App.Pokemon;
-	export let rotateCard: (poke: App.Pokemon) => void;
 	export let rotatedCards: App.Pokemon[];
 	export let matchCards: App.Pokemon[];
 	export let onValidateCard: boolean;
@@ -16,13 +15,11 @@
 		currentTarget: EventTarget & Element;
 	};
 
-	let isFirstRotated = false; // avoid animation rotate on first render
-	const findCurrentCard = (cards: App.Pokemon[]) =>
-		cards.find((_) => _.identifier === pokemon.identifier) !== undefined;
-	$: isMatch = findCurrentCard(matchCards);
-	$: isRotated = findCurrentCard(rotatedCards);
+	let isFirstRotattion = false; // avoid animation rotate on first render
+	$: isMatch = findCurrentCard(pokemon, matchCards);
+	$: isRotated = findCurrentCard(pokemon, rotatedCards);
 	$: if (isRotated) {
-		isFirstRotated = true;
+		isFirstRotattion = true;
 		flipSound.play()
 	}
 	$: if (isMatch) {
@@ -39,31 +36,28 @@
 		// @ts-ignore
 		e.target.src = fallbackImage;
 	};
+
 	let isLoaded = false;
 	let backgroundColor = 'grey';
-
 	const handleImageLoad = (e: EventHandle) => {
 		const image = e.currentTarget as HTMLImageElement;
-		const noAlpha = imageToRGBA(image);
-		if (noAlpha) {
-			// set RGB only
-			const rgb = noAlpha.split(',').slice(0, -1).join(',');
-			backgroundColor = `rgba(${rgb}, 0.2)`;
-		}
+		backgroundColor = getImageMostColor(image);
 	};
 
 </script>
 
 <button
 	class={`relative m-0 flex-1 ${isMatch ? 'animate-flash' : ''}`}
-	on:click={() => rotateCard(pokemon)}
+	on:click={() => {
+		rotatedCards = [...rotatedCards, pokemon];
+	}}
 	disabled={isRotated || onValidateCard}
 >
 	<div
-		class={`z-0 absolute top-0 left-0 h-full w-full bg-neutral-200 dark:bg-neutral-500 rounded-lg ${isFirstRotated ? (isRotated ? 'animate-flip-in-gone' : 'animate-flip-out-visible') : ''}`}
+		class={`z-0 absolute top-0 left-0 h-full w-full bg-neutral-200 dark:bg-neutral-500 rounded-lg ${isFirstRotattion ? (isRotated ? 'animate-flip-in-gone' : 'animate-flip-out-visible') : ''}`}
 	/>
 	<div
-		class={`relative p-3 h-full rounded-lg flex flex-col items-center justify-center gap-1 [backface-visibility:hidden] [transform:rotateY(-180deg)] ${isFirstRotated ? (isRotated ? 'animate-flip-in' : 'animate-flip-out') : ''}`}
+		class={`relative p-3 h-full rounded-lg flex flex-col items-center justify-center gap-1 [backface-visibility:hidden] [transform:rotateY(-180deg)] ${isFirstRotattion ? (isRotated ? 'animate-flip-in' : 'animate-flip-out') : ''}`}
 		style={`background-color: ${backgroundColor};`}
 	>
 		<img

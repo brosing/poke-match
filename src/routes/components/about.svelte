@@ -1,7 +1,8 @@
 <script lang="ts">
 	import { browser } from '$app/environment';
+	import { localStorageStore } from '$utils';
+	
 	import Icon from '../components/icon.svelte';
-	import { localStorageStore } from '../utils/local-storage';
 
 	export let showModal = false;
 	export let sab = '';

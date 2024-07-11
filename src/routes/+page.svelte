@@ -2,14 +2,15 @@
 	import { onMount } from 'svelte';
 	import { quintOut } from 'svelte/easing';
 	import { fade, slide } from 'svelte/transition';
+	import { browser } from '$app/environment';
 	import { getColorSchemeContext } from '$lib/contexts/color-scheme';
 	import { getLeaderboardContext } from '$lib/contexts/leaderboard';
-	import { formatTime, isPwa } from '../utils/common';
-	import PokemonCards from '../components/pokemon-cards.svelte';
-	import Icon from '../components/icon.svelte';
-	import ModalAbout from '../components/about.svelte';
 	import successMp3 from '$lib/sound/success.mp3';
-	import { browser } from '$app/environment';
+	import { isPwa, formatTime } from '$utils';
+
+	import Icon from './components/icon.svelte';
+	import PokemonCards from './components/pokemon-cards.svelte';
+	import ModalAbout from './components/about.svelte';
 
 	const colorSchemeStore = getColorSchemeContext();
 	$: preferred = colorSchemeStore.preferred;
@@ -127,5 +128,5 @@
 		</button>
 	</div>
 
-	<ModalAbout bind:showModal bind:sab />
+	<ModalAbout bind:showModal {sab} />
 </div>
