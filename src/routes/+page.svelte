@@ -74,13 +74,13 @@
 
 <div
 	class={`
-  flex flex-col h-dvh w-screen md:max-w-screen-sm p-4 md:px-16 md:mx-auto md:justify-center
+  flex flex-col h-dvh w-screen md:max-w-screen-sm p-4 md:mx-auto md:justify-center md:gap-4
   text-neutral-800 dark:text-white
   `}
 	style={`padding-bottom: ${sab};`}
 >
 	<div
-		class="relative py-4 md:py-10 flex flex-1 md:flex-grow-0 flex-row items-center transition-all justify-between"
+		class="relative py-4 md:mb-8 flex flex-1 md:flex-[0] flex-row items-center justify-between transition-all"
 	>
 		<div>
 			{#if finish}
@@ -114,7 +114,7 @@
 		<PokemonCards {startTimer} {stopTimer} />
 	{/key}
 
-	<div class="grid grid-cols-3 w-full items-center text-neutral-800 dark:text-white">
+	<div class="grid grid-cols-3 w-full items-center text-neutral-800 dark:text-white min-h-8">
 		<button on:click={changeColorScheme} class="py-4 opacity-60 text-left">
 			<p>{$preferred === 'dark' ? 'Dark' : 'Light'} Mode</p>
 		</button>

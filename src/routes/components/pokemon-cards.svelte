@@ -69,7 +69,7 @@
 </script>
 
 <div
-	class="grid grid-cols-3 md:grid-cols-4 flex-1 md:flex-[0] md:mb-4 gap-[2px] md:gap-1 md:min-h-[50%]"
+	class="grid grid-cols-3 md:grid-cols-4 gap-[2px] md:gap-1"
 >
 	{#each randomPokemons as pokemon (pokemon.identifier)}
 		<PokemonCard bind:rotatedCards {pokemon} {onValidateCard} {matchCards} />
