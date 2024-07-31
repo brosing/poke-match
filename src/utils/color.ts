@@ -18,11 +18,17 @@ export function getImageMostColor(
 	}
 ) {
 	const noAlpha = imageToRGBA(image);
+	const lowerWhite = (nums: string[]) => nums.map(num => {
+		if (parseInt(num, 2) > 250) return '250'
+		return num
+	})
+
 	if (noAlpha) {
 		// set RGB only
-		const rgb = noAlpha.split(',').slice(0, -1).join(',');
-		return `rgba(${rgb}, ${options.opacity})`;
+		const rgb = noAlpha.split(',').slice(0, -1)
+		const rgbString = lowerWhite(rgb).join(',');
+		return `rgba(${rgbString}, ${options.opacity})`;
 	}
-	// set default to white
-	return `rgba(255, 255, 255, ${options.opacity})`;
+	// set default to fafafa
+	return `rgba(250, 250, 250, ${options.opacity})`;
 }
