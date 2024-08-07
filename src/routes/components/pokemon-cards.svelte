@@ -12,6 +12,7 @@
 	onMount(async () => {
 		// NOTE to sync with localStorage
 		pokemons?.subscribe(async (data: App.Pokemon[]) => {
+			console.log('data', data)
 			if (data.length === 0) {
 				const result = await queryUnevolvedPokmons();
 				pokemons?.set(result);
