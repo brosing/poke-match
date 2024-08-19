@@ -3,6 +3,10 @@
 	import { quintOut } from 'svelte/easing';
 	import { fade, slide } from 'svelte/transition';
 	import { browser } from '$app/environment';
+
+	import { Capacitor } from '@capacitor/core';
+	import { StatusBar, Style } from '@capacitor/status-bar';
+
 	import { getColorSchemeContext } from '$lib/contexts/color-scheme';
 	import { getLeaderboardContext } from '$lib/contexts/leaderboard';
 	import successMp3 from '$lib/sound/success.mp3';
@@ -12,12 +16,31 @@
 	import PokemonCards from './components/pokemon-cards.svelte';
 	import ModalAbout from './components/about.svelte';
 
+	const isMobile = Capacitor.isNativePlatform()
 	const colorSchemeStore = getColorSchemeContext();
 	$: preferred = colorSchemeStore.preferred;
 	function changeColorScheme() {
 		const color = $preferred === 'dark' ? 'light' : 'dark';
 		colorSchemeStore.change(color);
 	}
+	colorSchemeStore.subscribe(color => {
+		if (isMobile) {
+			if (color === 'system') {
+				const isDark = $preferred === 'dark';
+				StatusBar.setStyle({
+					style: isDark ? Style.Dark : Style.Light
+				})
+				StatusBar.setBackgroundColor({ color: $preferred === 'dark' ? '#262626' : '#ffffff' })
+				return
+			}
+
+			const isDark = color === 'dark';
+			StatusBar.setStyle({
+				style: isDark ? Style.Dark : Style.Light
+			})
+			StatusBar.setBackgroundColor({ color: isDark ? '#262626' : '#ffffff' })
+		}
+	})
 
 	let sab = '0px';
 	let leaderboard = getLeaderboardContext();
@@ -75,9 +98,8 @@
 <div
 	class={`
   flex flex-col h-dvh w-screen md:max-w-screen-sm p-4 md:mx-auto md:justify-center md:gap-4
-  text-neutral-800 dark:text-white
+  text-neutral-800 dark:text-white pb-[${sab}]
   `}
-	style={`padding-bottom: ${sab};`}
 >
 	<div
 		class="relative py-4 md:mb-8 flex flex-1 md:flex-[0] flex-row items-center justify-between transition-all"
@@ -114,7 +136,7 @@
 		<PokemonCards {startTimer} {stopTimer} />
 	{/key}
 
-	<div class="grid grid-cols-3 w-full items-center text-neutral-800 dark:text-white min-h-8">
+	<div class={`grid grid-cols-3 w-full items-center text-neutral-800 dark:text-white min-h-8 ${isMobile ? 'pb-4' : ''}`}>
 		<button on:click={changeColorScheme} class="py-4 opacity-60 text-left">
 			<p>{$preferred === 'dark' ? 'Dark' : 'Light'} Mode</p>
 		</button>
