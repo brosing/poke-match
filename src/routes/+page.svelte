@@ -86,7 +86,7 @@
 	style={`padding-bottom: ${sab};`}
 >
 	<div
-		class="relative py-4 md:mb-8 flex flex-1 md:flex-[0] flex-row items-center justify-between transition-all"
+		class="relative py-4 md:mb-2 flex flex-1 md:flex-[0] flex-row items-center justify-between transition-all"
 	>
 		<div>
 			{#if finish}
