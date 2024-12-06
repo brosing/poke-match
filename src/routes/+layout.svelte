@@ -3,15 +3,16 @@
 
 	import { setColorSchemeContext } from '$lib/contexts/color-scheme';
 	import { setLeaderboardContext } from '$lib/contexts/leaderboard';
-	import { dev } from '$app/environment';
-	import { inject } from '@vercel/analytics';
 
-	inject({ mode: dev ? 'development' : 'production' });
+	
+	interface Props {
+		data: import('./$types').LayoutData;
+		children?: import('svelte').Snippet;
+	}
 
-	/** @type {import('./$types).LayoutData} */
-	export let data;
+	let { data, children }: Props = $props();
 	setColorSchemeContext(data.colorScheme);
 	setLeaderboardContext([]);
 </script>
 
-<slot />
+{@render children?.()}

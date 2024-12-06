@@ -1,4 +1,6 @@
 <script lang="ts">
+	import { run } from 'svelte/legacy';
+
 	import { onMount } from 'svelte';
 	import { quintOut } from 'svelte/easing';
 	import { fade, slide } from 'svelte/transition';
@@ -13,16 +15,16 @@
 	import ModalAbout from './components/about.svelte';
 
 	const colorSchemeStore = getColorSchemeContext();
-	$: preferred = colorSchemeStore.preferred;
+	let preferred = $derived(colorSchemeStore.preferred);
 	function changeColorScheme() {
 		const color = $preferred === 'dark' ? 'light' : 'dark';
 		colorSchemeStore.change(color);
 	}
 
-	let sab = '0px';
+	let sab = $state('0px');
 	let leaderboard = getLeaderboardContext();
-	let elapsed = 0;
-	let interval: NodeJS.Timeout;
+	let elapsed = $state(0);
+	let interval: number | undefined = $state();
 	function startTimer() {
 		if (!interval) {
 			const startTime = Date.now() - elapsed;
@@ -33,9 +35,11 @@
 	}
 	function stopTimer() {
 		const newTime = formatTime(elapsed);
-		leaderboard?.update((data) => [...data, newTime]);
+		if (newTime !== '00:00') {
+			leaderboard?.update((data) => [...data, newTime]);
+		}
 		clearInterval(interval);
-		interval = null;
+		interval = undefined;
 	}
 
 	onMount(() => {
@@ -54,22 +58,24 @@
 		};
 	});
 
-	let refresh: number = 0;
+	let refresh: number = $state(0);
 	const reloadCards = () => {
 		refresh = Math.random();
 		clearInterval(interval);
-		interval = null;
+		interval = undefined;
 		elapsed = 0;
 	};
 
-	$: finish = interval === null && elapsed > 0;
-	$: if (finish && browser) {
-		let successSound = new Audio(successMp3)
-		setTimeout(() => {
-			successSound.play()
-		}, 1200);
-	}
-	let showModal = false;
+	let finish = $derived(interval === undefined && elapsed > 0);
+	run(() => {
+		if (finish && browser) {
+			let successSound = new Audio(successMp3)
+			setTimeout(() => {
+				successSound.play()
+			}, 1200);
+		}
+	});
+	let showModal = $state(false);
 </script>
 
 <div
@@ -103,7 +109,7 @@
 			<button
 				transition:fade={{ duration: 800 }}
 				class="text-neutral-800 dark:text-white px-4 -mb-2"
-				on:click={reloadCards}
+				onclick={reloadCards}
 			>
 				<Icon name="reload" class="h-4 w-4" />
 			</button>
@@ -115,7 +121,7 @@
 	{/key}
 
 	<div class="grid grid-cols-3 w-full items-center text-neutral-800 dark:text-white min-h-8">
-		<button on:click={changeColorScheme} class="py-4 opacity-60 text-left">
+		<button onclick={changeColorScheme} class="py-4 opacity-60 text-left">
 			<p>{$preferred === 'dark' ? 'Dark' : 'Light'} Mode</p>
 		</button>
 		<p
@@ -123,7 +129,7 @@
 		>
 			{formatTime(elapsed)}
 		</p>
-		<button class="py-4 opacity-60 text-right" on:click={() => (showModal = true)}>
+		<button class="py-4 opacity-60 text-right" onclick={() => (showModal = true)}>
 			<p>About ?</p>
 		</button>
 	</div>

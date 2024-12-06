@@ -1,18 +1,23 @@
 <script lang="ts">
+	import { run } from 'svelte/legacy';
+
 	import { onMount } from 'svelte';
 	import PokemonCard from './pokemon-card.svelte';
 	import { shuffle, localStorageStore, queryUnevolvedPokmons, addIdentifier,  } from '$utils';
 
-	export let startTimer: () => void;
-	export let stopTimer: () => void;
+	interface Props {
+		startTimer: () => void;
+		stopTimer: () => void;
+	}
+
+	let { startTimer, stopTimer }: Props = $props();
 
 	const pokemons = localStorageStore<Omit<App.Pokemon, 'identifier'>[]>('pokemons', []);
-	let randomPokemons: App.Pokemon[] = [];
+	let randomPokemons: App.Pokemon[] = $state([]);
 
 	onMount(async () => {
 		// NOTE to sync with localStorage
 		pokemons?.subscribe(async (data: App.Pokemon[]) => {
-			console.log('data', data)
 			if (data.length === 0) {
 				const result = await queryUnevolvedPokmons();
 				pokemons?.set(result);
@@ -25,19 +30,19 @@
 		});
 	});
 
-	let rotatedCards: App.Pokemon[] = [];
-	let matchCards: App.Pokemon[] = []; // add flash effect on match cards
+	let rotatedCards: App.Pokemon[] = $state([]);
+	let matchCards: App.Pokemon[] = $state([]); // add flash effect on match cards
 	let lastMatchCardID: string = ''; // prevent flash effect on prev match cards
-	let onValidateCard = false; // To disabled interaction
+	let onValidateCard = $state(false); // To disabled interaction
 
-	$: {
+	run(() => {
 		if (rotatedCards.length > 0) {
 			startTimer();
 		}
 		if (rotatedCards.length === randomPokemons.length) {
 			stopTimer();
 		}
-	}
+	});
 
 	function addMatchEffect(cards: App.Pokemon[]) {
 		// to add animation & play sound to the latest match cards
@@ -64,9 +69,11 @@
 			onValidateCard = false;
 		}, 800);
 	}
-	$: if (rotatedCards.length > 0 && rotatedCards.length % 2 == 0) {
-		validateCards();
-	}
+	run(() => {
+		if (rotatedCards.length > 0 && rotatedCards.length % 2 == 0) {
+			validateCards();
+		}
+	});
 </script>
 
 <div

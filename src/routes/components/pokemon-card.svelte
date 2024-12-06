@@ -1,35 +1,50 @@
 <script lang="ts">
+	import { run } from 'svelte/legacy';
+
 	import { PUBLIC_IMAGE_URL } from '$env/static/public';
 	import { getImageMostColor, findCurrentCard } from '$utils';
 	import flipMp3 from '$lib/sound/flip.mp3';
 	import rightMp3 from '$lib/sound/right.mp3';
 
 	let flipSound = new Audio(flipMp3)
-	let rightSound = new Audio(rightMp3)
+	let rightSound = $state(new Audio(rightMp3))
 	rightSound.volume = 0.4
-	export let pokemon: App.Pokemon;
-	export let rotatedCards: App.Pokemon[];
-	export let matchCards: App.Pokemon[];
-	export let onValidateCard: boolean;
+	interface Props {
+		pokemon: App.Pokemon;
+		rotatedCards: App.Pokemon[];
+		matchCards: App.Pokemon[];
+		onValidateCard: boolean;
+	}
+
+	let {
+		pokemon,
+		rotatedCards = $bindable(),
+		matchCards,
+		onValidateCard
+	}: Props = $props();
 	type EventHandle = Event & {
 		currentTarget: EventTarget & Element;
 	};
 
-	let isFirstRotattion = false; // avoid animation rotate on first render
-	$: isMatch = findCurrentCard(pokemon, matchCards);
-	$: isRotated = findCurrentCard(pokemon, rotatedCards);
-	$: if (isRotated) {
-		isFirstRotattion = true;
-		flipSound.play()
-	}
-	$: if (isMatch) {
-		setTimeout(() => {
-			rightSound.play()
-		}, 200);
-		setTimeout(() => {
-			rightSound.play()
-		}, 700);
-	}
+	let isFirstRotattion = $state(false); // avoid animation rotate on first render
+	let isMatch = $derived(findCurrentCard(pokemon, matchCards));
+	let isRotated = $derived(findCurrentCard(pokemon, rotatedCards));
+	run(() => {
+		if (isRotated) {
+			isFirstRotattion = true;
+			flipSound.play()
+		}
+	});
+	run(() => {
+		if (isMatch) {
+			setTimeout(() => {
+				rightSound.play()
+			}, 200);
+			setTimeout(() => {
+				rightSound.play()
+			}, 700);
+		}
+	});
 
 	const fallbackImage = '/images/ball.png';
 	const handleError = (e: EventHandle) => {
@@ -37,8 +52,8 @@
 		e.target.src = fallbackImage;
 	};
 
-	let isLoaded = false;
-	let backgroundColor = 'grey';
+	let isLoaded = $state(false);
+	let backgroundColor = $state('grey');
 	const handleImageLoad = (e: EventHandle) => {
 		const image = e.currentTarget as HTMLImageElement;
 		backgroundColor = getImageMostColor(image);
@@ -48,14 +63,14 @@
 
 <button
 	class={`relative m-0 flex-1 ${isMatch ? 'animate-flash' : ''}`}
-	on:click={() => {
+	onclick={() => {
 		rotatedCards = [...rotatedCards, pokemon];
 	}}
 	disabled={isRotated || onValidateCard}
 >
 	<div
 		class={`z-0 absolute top-0 left-0 h-full w-full bg-neutral-200 dark:bg-neutral-500 rounded-lg ${isFirstRotattion ? (isRotated ? 'animate-flip-in-gone' : 'animate-flip-out-visible') : ''}`}
-	/>
+	></div>
 	<div
 		class={`relative p-3 h-full rounded-lg flex flex-col items-center justify-center gap-1 [backface-visibility:hidden] [transform:rotateY(-180deg)] ${isFirstRotattion ? (isRotated ? 'animate-flip-in' : 'animate-flip-out') : ''}`}
 		style={`background-color: ${backgroundColor};`}
@@ -64,10 +79,10 @@
 			alt={pokemon.name}
 			src={`${PUBLIC_IMAGE_URL}${pokemon.id}.png`}
 			class="absolute top-2 w-3/4 h-auto scale-90"
-			on:error={(e) => {
+			onerror={(e) => {
 				handleError(e);
 			}}
-			on:load={(e) => {
+			onload={(e) => {
 				isLoaded = true;
 				handleImageLoad(e);
 			}}
