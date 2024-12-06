@@ -1,9 +1,10 @@
 <script lang="ts">
-	import { run } from 'svelte/legacy';
-
 	import { onMount } from 'svelte';
 	import PokemonCard from './pokemon-card.svelte';
 	import { shuffle, localStorageStore, queryUnevolvedPokmons, addIdentifier,  } from '$utils';
+	import flipMp3 from '$lib/sound/flip.mp3';
+	import matchMp3 from '$lib/sound/right.mp3';
+	import { browser } from '$app/environment';
 
 	interface Props {
 		startTimer: () => void;
@@ -11,6 +12,23 @@
 	}
 
 	let { startTimer, stopTimer }: Props = $props();
+
+	let flipSound = browser ? new Audio(flipMp3) : null
+	let matchSound = browser ? new Audio(matchMp3) : null
+	if (matchSound) {
+		matchSound.volume = 0.4
+	}
+
+	function playFlipSound() {
+		flipSound?.play()
+	}
+
+	function playMatchSound() {
+		matchSound?.play()
+		setTimeout(() => {
+			matchSound?.play()
+		}, 500);
+	}
 
 	const pokemons = localStorageStore<Omit<App.Pokemon, 'identifier'>[]>('pokemons', []);
 	let randomPokemons: App.Pokemon[] = $state([]);
@@ -35,8 +53,8 @@
 	let lastMatchCardID: string = ''; // prevent flash effect on prev match cards
 	let onValidateCard = $state(false); // To disabled interaction
 
-	run(() => {
-		if (rotatedCards.length > 0) {
+	$effect(() => {
+		if (rotatedCards.length === 1) {
 			startTimer();
 		}
 		if (rotatedCards.length === randomPokemons.length) {
@@ -69,7 +87,7 @@
 			onValidateCard = false;
 		}, 800);
 	}
-	run(() => {
+	$effect(() => {
 		if (rotatedCards.length > 0 && rotatedCards.length % 2 == 0) {
 			validateCards();
 		}
@@ -80,6 +98,6 @@
 	class="grid grid-cols-3 md:grid-cols-4 gap-[2px] md:gap-1"
 >
 	{#each randomPokemons as pokemon (pokemon.identifier)}
-		<PokemonCard bind:rotatedCards {pokemon} {onValidateCard} {matchCards} />
+		<PokemonCard bind:rotatedCards {pokemon} {onValidateCard} {matchCards} {playFlipSound} {playMatchSound} />
 	{/each}
 </div>

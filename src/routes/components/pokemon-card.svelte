@@ -1,26 +1,23 @@
 <script lang="ts">
-	import { run } from 'svelte/legacy';
-
 	import { PUBLIC_IMAGE_URL } from '$env/static/public';
 	import { getImageMostColor, findCurrentCard } from '$utils';
-	import flipMp3 from '$lib/sound/flip.mp3';
-	import rightMp3 from '$lib/sound/right.mp3';
 
-	let flipSound = new Audio(flipMp3)
-	let rightSound = $state(new Audio(rightMp3))
-	rightSound.volume = 0.4
 	interface Props {
 		pokemon: App.Pokemon;
 		rotatedCards: App.Pokemon[];
 		matchCards: App.Pokemon[];
 		onValidateCard: boolean;
+		playFlipSound: () => void;
+		playMatchSound: () => void;
 	}
 
 	let {
 		pokemon,
 		rotatedCards = $bindable(),
 		matchCards,
-		onValidateCard
+		onValidateCard,
+		playFlipSound,
+		playMatchSound
 	}: Props = $props();
 	type EventHandle = Event & {
 		currentTarget: EventTarget & Element;
@@ -29,20 +26,15 @@
 	let isFirstRotattion = $state(false); // avoid animation rotate on first render
 	let isMatch = $derived(findCurrentCard(pokemon, matchCards));
 	let isRotated = $derived(findCurrentCard(pokemon, rotatedCards));
-	run(() => {
+	$effect(() => {
 		if (isRotated) {
 			isFirstRotattion = true;
-			flipSound.play()
+			playFlipSound();
 		}
 	});
-	run(() => {
+	$effect(() => {
 		if (isMatch) {
-			setTimeout(() => {
-				rightSound.play()
-			}, 200);
-			setTimeout(() => {
-				rightSound.play()
-			}, 700);
+			playMatchSound();
 		}
 	});
 

@@ -1,9 +1,5 @@
 <script lang="ts">
-	import { run, self, createBubbler, stopPropagation } from 'svelte/legacy';
-
-	const bubble = createBubbler();
 	import { browser } from '$app/environment';
-	import { localStorageStore } from '$utils';
 	
 	import Icon from '../components/icon.svelte';
 	import { getLeaderboardContext } from '$lib/contexts/leaderboard';
@@ -16,8 +12,8 @@
 	let { showModal = $bindable(false), sab = '' }: Props = $props();
 	let showSAB = $state(false);
 	let dialog: HTMLDialogElement | undefined = $state();
-	run(() => {
-		if (dialog && showModal) dialog.showModal();
+	$effect(() => {
+		if (showModal) dialog?.showModal();
 	});
 
 	const leaderboard = getLeaderboardContext();
@@ -47,12 +43,12 @@
 <dialog
 	bind:this={dialog}
 	onclose={() => (showModal = false)}
-	onclick={self(() => dialog?.close())}
+	onclick={() => dialog?.close()}
 	class="h-fit w-3/4 md:w-[420px] rounded-xl bg-white dark:bg-neutral-800 text-neutral-800 dark:text-white backdrop:bg-black backdrop:bg-opacity-70"
 >
 	<!-- svelte-ignore a11y_no_static_element_interactions -->
 	<div
-		onclick={stopPropagation(bubble('click'))}
+		onclick={(e) => e.stopPropagation()}
 		class="gap-2 p-4 pb-0 flex flex-col justify-center items-center relative text-lg"
 	>
 		<h2 class="text-5xl font-bold mb-4">About</h2>
@@ -63,7 +59,7 @@
 			<Icon name="x" class="h-4 w-4" />
 		</button>
 
-		<p>Credit to <a href="https://beta.pokeapi.co" class="underline">Poke API</a></p>
+		<p>Credit to <a href="https://pokeapi.co" target="_blank" class="underline">Poke API</a></p>
 		<p ondblclick={toggleSAB}>Your fastest time is: <span class="font-bold">{fastestTime}</span></p>
 		
 		{#if showSAB}

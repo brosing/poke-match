@@ -1,6 +1,4 @@
 <script lang="ts">
-	import { run } from 'svelte/legacy';
-
 	import { onMount } from 'svelte';
 	import { quintOut } from 'svelte/easing';
 	import { fade, slide } from 'svelte/transition';
@@ -58,17 +56,17 @@
 		};
 	});
 
-	let refresh: number = $state(0);
+	let refresh = $state(false);
 	const reloadCards = () => {
-		refresh = Math.random();
+		refresh = !refresh
 		clearInterval(interval);
 		interval = undefined;
 		elapsed = 0;
 	};
 
 	let finish = $derived(interval === undefined && elapsed > 0);
-	run(() => {
-		if (finish && browser) {
+	$effect(() => {
+		if (browser && finish) {
 			let successSound = new Audio(successMp3)
 			setTimeout(() => {
 				successSound.play()
@@ -86,7 +84,7 @@
 	style={`padding-bottom: ${sab};`}
 >
 	<div
-		class="relative py-4 md:mb-2 flex flex-1 md:flex-[0] flex-row items-center justify-between transition-all"
+		class="relative py-4 md:mb-2	 flex flex-1 md:flex-[0] flex-row items-center justify-between transition-all"
 	>
 		<div>
 			{#if finish}
