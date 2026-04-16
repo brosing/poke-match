@@ -6,12 +6,11 @@
 	import matchMp3 from '$lib/sound/right.mp3';
 	import { browser } from '$app/environment';
 
-	interface Props {
+	let { startTimer, stopTimer, pairCount = 6 }: {
 		startTimer: () => void;
 		stopTimer: () => void;
-	}
-
-	let { startTimer, stopTimer }: Props = $props();
+		pairCount?: number;
+	} = $props();
 
 	let flipSound = browser ? new Audio(flipMp3) : null
 	let matchSound = browser ? new Audio(matchMp3) : null
@@ -40,10 +39,10 @@
 				const result = await queryUnevolvedPokmons();
 				pokemons?.set(result);
 			} else {
-				// get only 6 & double it to 12 cards from the Query
-				const random6 = shuffle(data).slice(0, 6);
-				const double6 = addIdentifier([...random6, ...random6]);
-				randomPokemons = shuffle(double6);
+				// get based on pairCount & double it
+				const randomSet = shuffle(data).slice(0, pairCount);
+				const doubleSet = addIdentifier([...randomSet, ...randomSet]);
+				randomPokemons = shuffle(doubleSet);
 			}
 		});
 	});
@@ -95,10 +94,17 @@
 			validatePair(pair);
 		}
 	});
+
+	let gridCols = $derived.by(() => {
+		const total = pairCount * 2;
+		if (total === 18) return 'grid-cols-6';
+		if (total === 32) return 'grid-cols-8';
+		return 'grid-cols-3 md:grid-cols-4';
+	});
 </script>
 
 <div
-	class="grid grid-cols-3 md:grid-cols-4 gap-[2px] md:gap-1"
+	class={`grid ${gridCols} gap-[2px] md:gap-1 overflow-y-auto`}
 >
 	{#each randomPokemons as pokemon (pokemon.identifier)}
 		<PokemonCard bind:rotatedCards {pokemon} {matchCards} {playFlipSound} {playMatchSound} />

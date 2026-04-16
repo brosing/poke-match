@@ -6,7 +6,7 @@
 	import { getColorSchemeContext } from '$lib/contexts/color-scheme';
 	import { getLeaderboardContext } from '$lib/contexts/leaderboard';
 	import successMp3 from '$lib/sound/success.mp3';
-	import { isPwa, formatTime } from '$utils';
+	import { isPwa, formatTime, localStorageStore } from '$utils';
 
 	import Icon from './components/icon.svelte';
 	import PokemonCards from './components/pokemon-cards.svelte';
@@ -21,6 +21,21 @@
 
 	let sab = $state('0px');
 	let leaderboard = getLeaderboardContext();
+	let windowWidth = $state(0);
+
+	const gameSizeStore = localStorageStore<number>('gameSize', 12);
+	let gameSize = $derived(gameSizeStore ? $gameSizeStore : 12);
+
+	$effect(() => {
+		if (windowWidth > 0 && windowWidth < 768 && gameSize !== 12) {
+			updateGameSize(12);
+		}
+	});
+
+	function updateGameSize(size: number) {
+		gameSizeStore?.set(size);
+		reloadCards();
+	}
 	let elapsed = $state(0);
 	let interval: number | undefined = $state();
 	function startTimer() {
@@ -76,15 +91,17 @@
 	let showModal = $state(false);
 </script>
 
+<svelte:window bind:innerWidth={windowWidth} />
+
 <div
 	class={`
-  flex flex-col h-dvh w-screen md:max-w-screen-sm p-4 md:mx-auto md:justify-center md:gap-4
+  flex flex-col h-dvh w-screen ${gameSize >= 18 ? 'md:max-w-screen-lg' : 'md:max-w-screen-sm'} p-4 md:mx-auto md:justify-center md:gap-4
   text-neutral-800 dark:text-white
   `}
 	style={`padding-bottom: ${sab};`}
 >
 	<div
-		class="relative py-4 md:mb-2	 flex flex-1 md:flex-[0] flex-row items-center justify-between transition-all"
+		class="relative py-4 md:mb-2 flex flex-1 md:flex-[0] flex-row items-center justify-between transition-all"
 	>
 		<div>
 			{#if finish}
@@ -111,11 +128,33 @@
 			>
 				<Icon name="reload" class="h-4 w-4" />
 			</button>
+		{:else}
+			<div class="hidden md:flex flex-row items-center gap-2 bg-neutral-100 dark:bg-neutral-800 p-1 rounded-lg text-xs font-medium border border-neutral-200 dark:border-neutral-700">
+				<button 
+					onclick={() => updateGameSize(12)}
+					class={`px-3 py-1.5 rounded-md transition-all ${gameSize === 12 ? 'bg-white dark:bg-neutral-700 shadow-sm text-neutral-900 dark:text-white' : 'text-neutral-500 hover:text-neutral-700 dark:hover:text-neutral-300'}`}
+				>
+					Easy (12)
+				</button>
+				<button 
+					onclick={() => updateGameSize(18)}
+					class={`px-3 py-1.5 rounded-md transition-all ${gameSize === 18 ? 'bg-white dark:bg-neutral-700 shadow-sm text-neutral-900 dark:text-white' : 'text-neutral-500 hover:text-neutral-700 dark:hover:text-neutral-300'}`}
+				>
+					Medium (18)
+				</button>
+				<button 
+					onclick={() => updateGameSize(32)}
+					class={`px-3 py-1.5 rounded-md transition-all ${gameSize === 32 ? 'bg-white dark:bg-neutral-700 shadow-sm text-neutral-900 dark:text-white' : 'text-neutral-500 hover:text-neutral-700 dark:hover:text-neutral-300'}`}
+				>
+					Hard (32)
+				</button>
+			</div>
 		{/if}
 	</div>
 
 	{#key refresh}
-		<PokemonCards {startTimer} {stopTimer} />
+		<!-- Pass pairCount based on selected game size -->
+		<PokemonCards {startTimer} {stopTimer} pairCount={gameSize / 2} />
 	{/key}
 
 	<div class="grid grid-cols-3 w-full items-center text-neutral-800 dark:text-white min-h-8">
