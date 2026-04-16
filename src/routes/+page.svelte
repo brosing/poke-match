@@ -99,14 +99,14 @@
 <div
 	class={`
   flex flex-col h-dvh w-screen ${gameSize >= 18 ? 'md:max-w-screen-lg' : 'md:max-w-screen-sm'} p-4 md:mx-auto md:justify-center md:gap-4
-  text-neutral-800 dark:text-white
+  text-neutral-800 dark:text-white transition-all duration-500 ease-in-out
   `}
 	style={`padding-bottom: ${sab};`}
 >
 	<div
 		class="relative py-4 md:mb-2 flex flex-1 md:flex-[0] flex-row items-center justify-between transition-all"
 	>
-		<div>
+		<div class="flex-1">
 			{#if finish}
 				<p
 					class="text-5xl font-bold animate-flash-infinite"
@@ -123,9 +123,9 @@
 				</h1>
 			{/if}
 		</div>
-		<div class="relative flex items-center justify-end min-w-[200px]">
+		<div class="relative flex items-center justify-end md:min-w-[200px]">
 			{#if finish}
-				<div class="absolute right-0 -top-4 h-8 flex justify-center items-center" transition:fade={{ duration: 300 }}>
+				<div class="absolute right-0 -top-3 h-8 flex justify-center items-center" transition:fade={{ duration: 300 }}>
 					<button
 						class="text-neutral-800 dark:text-white px-4"
 						onclick={reloadCards}
@@ -152,10 +152,18 @@
 		</div>
 	</div>
 
-	{#key refresh}
-		<!-- Pass pairCount based on selected game size -->
-		<PokemonCards {startTimer} {stopTimer} pairCount={gameSize / 2} />
-	{/key}
+	<div class="grid grid-cols-1 grid-rows-1 overflow-hidden">
+		{#key refresh}
+			<div
+				class="col-start-1 row-start-1"
+				in:fade={{ duration: 400, delay: 200 }}
+				out:fade={{ duration: 200 }}
+			>
+				<!-- Pass pairCount based on selected game size -->
+				<PokemonCards {startTimer} {stopTimer} pairCount={gameSize / 2} />
+			</div>
+		{/key}
+	</div>
 
 	<div class="grid grid-cols-3 w-full items-center text-neutral-800 dark:text-white min-h-8">
 		<button onclick={changeColorScheme} class="py-4 opacity-60 text-left">
