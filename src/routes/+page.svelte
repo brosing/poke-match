@@ -123,36 +123,33 @@
 				</h1>
 			{/if}
 		</div>
-		{#if finish}
-			<button
-				transition:fade={{ duration: 800 }}
-				class="text-neutral-800 dark:text-white px-4 -mb-2"
-				onclick={reloadCards}
-			>
-				<Icon name="reload" class="h-4 w-4" />
-			</button>
-		{:else}
-			<div class="hidden md:flex flex-row items-center gap-2 bg-neutral-100 dark:bg-neutral-800 p-1 rounded-lg text-xs font-medium border border-neutral-200 dark:border-neutral-700">
-				<button 
-					onclick={() => updateGameSize(12)}
-					class={`px-3 py-1.5 rounded-md transition-all ${gameSize === 12 ? 'bg-white dark:bg-neutral-700 shadow-sm text-neutral-900 dark:text-white' : 'text-neutral-500 hover:text-neutral-700 dark:hover:text-neutral-300'}`}
-				>
-					Easy (12)
-				</button>
-				<button 
-					onclick={() => updateGameSize(18)}
-					class={`px-3 py-1.5 rounded-md transition-all ${gameSize === 18 ? 'bg-white dark:bg-neutral-700 shadow-sm text-neutral-900 dark:text-white' : 'text-neutral-500 hover:text-neutral-700 dark:hover:text-neutral-300'}`}
-				>
-					Medium (18)
-				</button>
-				<button 
-					onclick={() => updateGameSize(32)}
-					class={`px-3 py-1.5 rounded-md transition-all ${gameSize === 32 ? 'bg-white dark:bg-neutral-700 shadow-sm text-neutral-900 dark:text-white' : 'text-neutral-500 hover:text-neutral-700 dark:hover:text-neutral-300'}`}
-				>
-					Hard (32)
-				</button>
-			</div>
-		{/if}
+		<div class="relative flex items-center justify-end min-w-[200px]">
+			{#if finish}
+				<div class="absolute right-0 -top-4 h-8 flex justify-center items-center" transition:fade={{ duration: 300 }}>
+					<button
+						class="text-neutral-800 dark:text-white px-4"
+						onclick={reloadCards}
+					>
+						<Icon name="reload" class="h-4 w-4" />
+					</button>
+				</div>
+			{:else}
+				<div class="absolute right-0 hidden md:flex flex-row items-center gap-2 bg-neutral-100 dark:bg-neutral-800 p-1 rounded-lg text-sm font-medium border border-neutral-200 dark:border-neutral-700" transition:fade={{ duration: 300 }}>
+					{#each [
+						{ label: 'Easy', size: 12 },
+						{ label: 'Medium', size: 18 },
+						{ label: 'Hard', size: 32 }
+					] as { label, size }}
+						<button 
+							onclick={() => updateGameSize(size)}
+							class={`px-3 py-2 rounded-md transition-all whitespace-nowrap ${gameSize === size ? 'bg-white dark:bg-neutral-700 shadow-sm text-neutral-900 dark:text-white' : 'text-neutral-500 hover:text-neutral-700 dark:hover:text-neutral-300'}`}
+						>
+							{label} ({size})
+						</button>
+					{/each}
+				</div>
+			{/if}
+		</div>
 	</div>
 
 	{#key refresh}
