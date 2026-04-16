@@ -12,7 +12,7 @@
 
 	let { data, children }: Props = $props();
 	setColorSchemeContext(data.colorScheme);
-	setLeaderboardContext([]);
+	setLeaderboardContext({});
 </script>
 
 {@render children?.()}

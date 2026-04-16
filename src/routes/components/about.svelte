@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { browser } from '$app/environment';
-	
+
 	import Icon from '../components/icon.svelte';
 	import { getLeaderboardContext } from '$lib/contexts/leaderboard';
 
@@ -17,18 +17,35 @@
 	});
 
 	const leaderboard = getLeaderboardContext();
-	let fastestTime: string = $state('-');
+	let bestTimes: { label: string; time: string }[] = $state([]);
 
 	function toggleSAB() {
-		showSAB = !showSAB
+		showSAB = !showSAB;
 	}
 
-	leaderboard?.subscribe((data: string[]) => {
-		if (data[0]) {
-			fastestTime = data.sort()[0];
-		} else {
-			fastestTime = '-';
+	const categoryMap: Record<string, string> = {
+		'12': 'Easy',
+		'18': 'Medium',
+		'32': 'Hard'
+	};
+
+	leaderboard?.subscribe((data: Record<string, string[]>) => {
+		const results: { label: string; time: string }[] = [];
+		for (const [size, times] of Object.entries(data)) {
+			if (times.length > 0) {
+				const sortedTimes = [...times].sort();
+				results.push({
+					label: categoryMap[size] || `Size ${size}`,
+					time: sortedTimes[0]
+				});
+			}
 		}
+		results.sort((a, b) => {
+			const sizeA = Object.keys(categoryMap).find((key) => categoryMap[key] === a.label) || '0';
+			const sizeB = Object.keys(categoryMap).find((key) => categoryMap[key] === b.label) || '0';
+			return parseInt(sizeA) - parseInt(sizeB);
+		});
+		bestTimes = results;
 	});
 
 	function sendEmail() {
@@ -39,16 +56,19 @@
 	}
 </script>
 
-<!-- svelte-ignore a11y_click_events_have_key_events, a11y_no_noninteractive_element_interactions -->
 <dialog
 	bind:this={dialog}
 	onclose={() => (showModal = false)}
-	onclick={() => dialog?.close()}
+	onclick={(e) => {
+		if (e.target === dialog) dialog?.close();
+	}}
+	onkeydown={(e) => {
+		if (e.key === 'Escape') dialog?.close();
+	}}
 	class="h-fit w-3/4 md:w-[420px] rounded-xl bg-white dark:bg-neutral-800 text-neutral-800 dark:text-white backdrop:bg-black backdrop:bg-opacity-70"
 >
-	<!-- svelte-ignore a11y_no_static_element_interactions -->
 	<div
-		onclick={(e) => e.stopPropagation()}
+		role="document"
 		class="gap-2 p-4 pb-0 flex flex-col justify-center items-center relative text-lg"
 	>
 		<h2 class="text-5xl font-bold mb-4">About</h2>
@@ -60,16 +80,27 @@
 		</button>
 
 		<p>Credit to <a href="https://pokeapi.co" target="_blank" class="underline">Poke API</a></p>
-		<p ondblclick={toggleSAB}>Your fastest time is: <span class="font-bold">{fastestTime}</span></p>
-		
+		<div class="flex flex-col items-center gap-1 mt-6" ondblclick={toggleSAB}>
+			<p>Your fastest time is:</p>
+			{#if bestTimes.length > 0}
+				{#each bestTimes as entry}
+					<p>
+						<span class="font-bold uppercase">{entry.label}</span>:
+						<span class="font-bold">{entry.time}</span>
+					</p>
+				{/each}
+			{:else}
+				<p>No records yet</p>
+			{/if}
+		</div>
+
 		{#if showSAB}
-		<p>sab: {sab}</p>
+			<p>sab: {sab}</p>
 		{/if}
-		
+
 		<button class="flex gap-2 mt-8" onclick={sendEmail}>
 			Give Feedback <Icon name="email" class="h-4 w-4 -bottom-1 relative" />
 		</button>
-
 
 		<div class="p-4 border border-neutral-800 dark:border-white rounded-lg text-center my-4">
 			<p>This web is installable to your Mobile Home Screen</p>

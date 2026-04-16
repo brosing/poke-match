@@ -49,7 +49,10 @@
 	function stopTimer() {
 		const newTime = formatTime(elapsed);
 		if (newTime !== '00:00') {
-			leaderboard?.update((data) => [...data, newTime]);
+			leaderboard?.update((data) => {
+				const current = data[gameSize] || [];
+				return { ...data, [gameSize]: [...current, newTime] };
+			});
 		}
 		clearInterval(interval);
 		interval = undefined;
