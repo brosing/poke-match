@@ -6,7 +6,6 @@
 		pokemon: App.Pokemon;
 		rotatedCards: App.Pokemon[];
 		matchCards: App.Pokemon[];
-		onValidateCard: boolean;
 		playFlipSound: () => void;
 		playMatchSound: () => void;
 	}
@@ -15,7 +14,6 @@
 		pokemon,
 		rotatedCards = $bindable(),
 		matchCards,
-		onValidateCard,
 		playFlipSound,
 		playMatchSound
 	}: Props = $props();
@@ -26,6 +24,10 @@
 	let isFirstRotattion = $state(false); // avoid animation rotate on first render
 	let isMatch = $derived(findCurrentCard(pokemon, matchCards));
 	let isRotated = $derived(findCurrentCard(pokemon, rotatedCards));
+
+	$effect(() => {
+		console.log(pokemon.id);
+	})
 	$effect(() => {
 		if (isRotated) {
 			isFirstRotattion = true;
@@ -58,7 +60,7 @@
 	onclick={() => {
 		rotatedCards = [...rotatedCards, pokemon];
 	}}
-	disabled={isRotated || onValidateCard}
+	disabled={isRotated}
 >
 	<div
 		class={`z-0 absolute top-0 left-0 h-full w-full bg-neutral-200 dark:bg-neutral-500 rounded-lg ${isFirstRotattion ? (isRotated ? 'animate-flip-in-gone' : 'animate-flip-out-visible') : ''}`}
@@ -69,7 +71,7 @@
 	>
 		<img
 			alt={pokemon.name}
-			src={`${PUBLIC_IMAGE_URL}${pokemon.id}.png`}
+			src={`${PUBLIC_IMAGE_URL}/${pokemon.id}.png`}
 			class="absolute top-2 w-3/4 h-auto scale-90"
 			onerror={(e) => {
 				handleError(e);

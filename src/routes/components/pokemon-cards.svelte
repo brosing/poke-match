@@ -51,22 +51,22 @@
 	let rotatedCards: App.Pokemon[] = $state([]);
 	let matchCards: App.Pokemon[] = $state([]); // add flash effect on match cards
 	let lastMatchCardID: string = ''; // prevent flash effect on prev match cards
-	let onValidateCard = $state(false); // To disabled interaction
+	let processedCount = 0;
 
 	$effect(() => {
 		if (rotatedCards.length === 1) {
 			startTimer();
 		}
-		if (rotatedCards.length === randomPokemons.length) {
+		if (rotatedCards.length > 0 && rotatedCards.length === randomPokemons.length) {
 			stopTimer();
 		}
 	});
 
 	function addMatchEffect(cards: App.Pokemon[]) {
 		// to add animation & play sound to the latest match cards
-		const lastID = rotatedCards.at(-1)?.id ?? '';
-		if (lastMatchCardID !== rotatedCards.at(-1)?.id) {
-			lastMatchCardID = lastID;
+		const lastID = cards[1].id;
+		if (lastMatchCardID !== lastID) {
+			lastMatchCardID = lastID as string;
 			matchCards = cards;
 			setTimeout(() => {
 				matchCards = [];
@@ -74,22 +74,25 @@
 		}
 	}
 
-	function validateCards() {
-		onValidateCard = true;
+	function validatePair(pair: App.Pokemon[]) {
 		setTimeout(() => {
-			const cards = rotatedCards.slice(-2); // get the current rotation
-			// remote from rotatedCards if the current rotation isn't match
-			if (cards[0].id !== cards[1].id) {
-				rotatedCards = rotatedCards.slice(0, -2);
+			if (pair[0].id !== pair[1].id) {
+				// Remove pair from rotatedCards
+				rotatedCards = rotatedCards.filter(
+					(c) => c.identifier !== pair[0].identifier && c.identifier !== pair[1].identifier
+				);
+				processedCount -= 2;
 			} else {
-				addMatchEffect(cards);
+				addMatchEffect(pair);
 			}
-			onValidateCard = false;
 		}, 800);
 	}
+
 	$effect(() => {
-		if (rotatedCards.length > 0 && rotatedCards.length % 2 == 0) {
-			validateCards();
+		if (rotatedCards.length >= processedCount + 2) {
+			const pair = [rotatedCards[processedCount], rotatedCards[processedCount + 1]];
+			processedCount += 2;
+			validatePair(pair);
 		}
 	});
 </script>
@@ -98,6 +101,6 @@
 	class="grid grid-cols-3 md:grid-cols-4 gap-[2px] md:gap-1"
 >
 	{#each randomPokemons as pokemon (pokemon.identifier)}
-		<PokemonCard bind:rotatedCards {pokemon} {onValidateCard} {matchCards} {playFlipSound} {playMatchSound} />
+		<PokemonCard bind:rotatedCards {pokemon} {matchCards} {playFlipSound} {playMatchSound} />
 	{/each}
 </div>
