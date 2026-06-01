@@ -13,20 +13,27 @@
 		%sveltekit.head%
 	</head>
 	<body data-sveltekit-preload-data="hover">
-		<!-- "vanilla", independent from framework and its hydration -->
+		<!-- Ambient Canvas Backgrounds -->
+		<div class="grid-background"></div>
+		<div class="radial-glow"></div>
+
+		<!-- Pre-hydration Splash Overlay -->
 		<div
 			id="splash"
 			class="
 			absolute top-8 left-0 bottom-0 right-0 flex flex-col justify-center items-center rounded-t-3xl
-			bg-neutral-800 text-white dark:bg-neutral-200 dark:text-neutral-800 
-			[animation-delay:2s] animate-drop-out z-10 transition-colors
+			[animation-delay:2s] animate-drop-out z-10 transition-colors duration-300
 			"
+			style="background-color: var(--bg-color); border-top: 1px solid var(--border-color); color: var(--text-primary);"
 		>
-			<h1 class="text-7xl font-bold mb-4 animate-slide-up-in">Poke Match</h1>
-			<p class="text-xl opacity-0 [animation-delay:0.5s] animate-slide-up-in">Memory Match Game</p>
+			<h1 class="text-7xl font-bold mb-3 animate-slide-up-in tracking-tight">Poke Match</h1>
+			<p class="text-lg opacity-0 [animation-delay:0.5s] animate-slide-up-in tracking-widest uppercase text-xs" style="color: var(--text-secondary);">
+				Memory Match Game
+			</p>
 		</div>
-		<!-- hydration zone -->
-		<div class="opacity-0 [animation-delay:2.5s] animate-browse-in bg-white dark:bg-neutral-800">
+
+		<!-- Hydration Zone -->
+		<div class="opacity-0 [animation-delay:2.5s] animate-browse-in min-h-dvh">
 			%sveltekit.body%
 		</div>
 	</body>

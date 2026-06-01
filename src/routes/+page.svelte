@@ -92,49 +92,65 @@
 		}
 	});
 	let showModal = $state(false);
+
+	// Handle global keyboard listeners
+	function handleKeyDown(e: KeyboardEvent) {
+		if (['INPUT', 'TEXTAREA'].includes((e.target as HTMLElement)?.tagName) || (e.target as HTMLElement)?.isContentEditable) return;
+		
+		const key = e.key.toLowerCase();
+		if (key === 't') {
+			e.preventDefault();
+			changeColorScheme();
+		} else if (key === 'r') {
+			e.preventDefault();
+			reloadCards();
+		}
+	}
 </script>
 
-<svelte:window bind:innerWidth={windowWidth} />
+<svelte:window bind:innerWidth={windowWidth} onkeydown={handleKeyDown} />
 
 <div
 	class={`
-  flex flex-col h-dvh w-screen ${gameSize >= 18 ? 'md:max-w-screen-lg' : 'md:max-w-screen-sm'} p-4 md:mx-auto md:justify-center md:gap-4
-  text-neutral-800 dark:text-white transition-all duration-500 ease-in-out
-  `}
+	flex flex-col h-dvh w-screen ${gameSize >= 18 ? 'md:max-w-screen-lg' : 'md:max-w-screen-sm'} p-4 md:mx-auto md:justify-center md:gap-6
+	transition-all duration-500 ease-in-out
+	`}
 	style={`padding-bottom: ${sab};`}
 >
-	<div
-		class="relative py-4 md:mb-2 flex flex-1 md:flex-[0] flex-row items-center justify-between transition-all"
+	<!-- Header Bar -->
+	<header
+		class="relative py-4 md:py-6 flex flex-row items-center justify-between border-b"
+		style="border-color: var(--border-color);"
 	>
 		<div class="flex-1">
 			{#if finish}
-				<p
-					class="text-5xl font-bold animate-flash-infinite"
-					transition:slide={{ delay: 1000, duration: 300, easing: quintOut, axis: 'y' }}
+				<h1
+					class="text-4xl md:text-5xl font-bold uppercase tracking-tight"
+					style="color: var(--accent-green-text);"
+					transition:slide={{ delay: 300, duration: 300, easing: quintOut, axis: 'y' }}
 				>
-					Congratulation!
-				</p>
+					Congratulations!
+				</h1>
 			{:else}
 				<h1
-					class="text-5xl font-bold"
-					transition:slide={{ delay: 1000, duration: 300, easing: quintOut, axis: 'y' }}
+					class="text-4xl md:text-5xl font-bold tracking-tight"
+					style="color: var(--text-primary);"
+					transition:slide={{ delay: 300, duration: 300, easing: quintOut, axis: 'y' }}
 				>
 					Poke Match
 				</h1>
 			{/if}
 		</div>
-		<div class="relative flex items-center justify-end md:min-w-[200px]">
-			{#if finish}
-				<div class="absolute right-0 -top-3 h-8 flex justify-center items-center" transition:fade={{ duration: 300 }}>
-					<button
-						class="text-neutral-800 dark:text-white px-4"
-						onclick={reloadCards}
-					>
-						<Icon name="reload" class="h-4 w-4" />
-					</button>
-				</div>
-			{:else}
-				<div class="absolute right-0 hidden md:flex flex-row items-center gap-2 bg-neutral-100 dark:bg-neutral-800 p-1 rounded-lg text-sm font-medium border border-neutral-200 dark:border-neutral-700" transition:fade={{ duration: 300 }}>
+
+		<!-- Difficulty selector and Reset control -->
+		<div class="relative flex items-center gap-4">
+			{#if !finish}
+				<!-- Segmented difficulty selector on desktop -->
+				<div 
+					class="hidden md:flex flex-row items-center gap-0.5 p-0.5 rounded-lg border text-sm font-medium" 
+					style="background-color: var(--bg-color); border-color: var(--border-color);"
+					transition:fade={{ duration: 200 }}
+				>
 					{#each [
 						{ label: 'Easy', size: 12 },
 						{ label: 'Medium', size: 18 },
@@ -142,42 +158,77 @@
 					] as { label, size }}
 						<button 
 							onclick={() => updateGameSize(size)}
-							class={`px-3 py-2 rounded-md transition-all whitespace-nowrap ${gameSize === size ? 'bg-white dark:bg-neutral-700 shadow-sm text-neutral-900 dark:text-white' : 'text-neutral-500 hover:text-neutral-700 dark:hover:text-neutral-300'}`}
+							class={`px-3 py-1.5 rounded-md transition-all whitespace-nowrap text-xs font-semibold ${gameSize === size ? 'shadow-sm' : 'opacity-60 hover:opacity-100'}`}
+							style={gameSize === size ? 'background-color: var(--surface-color); border: 1px solid var(--border-color-hover); color: var(--text-primary);' : 'background-color: transparent; border: 1px solid transparent; color: var(--text-secondary);'}
 						>
 							{label} ({size})
 						</button>
 					{/each}
 				</div>
 			{/if}
-		</div>
-	</div>
 
-	<div class="grid grid-cols-1 grid-rows-1 overflow-hidden">
+			<!-- Always-available Restart Button -->
+			<button
+				class="p-2 rounded-md border hover-lift opacity-80 hover:opacity-100 flex items-center gap-1.5 transition-all text-xs"
+				style="background-color: var(--surface-color); border-color: var(--border-color); color: var(--text-primary);"
+				onclick={reloadCards}
+				aria-label="Restart game"
+			>
+				<Icon name="reload" class="h-3.5 w-3.5" />
+				<span class="hidden md:inline font-mono opacity-50 uppercase text-[10px] tracking-widest">[R]</span>
+			</button>
+		</div>
+	</header>
+
+	<!-- Cards Canvas Area -->
+	<div class="flex-1 grid grid-cols-1 grid-rows-1 overflow-hidden py-2 md:py-4">
 		{#key refresh}
 			<div
-				class="col-start-1 row-start-1"
-				in:fade={{ duration: 400, delay: 200 }}
-				out:fade={{ duration: 200 }}
+				class="col-start-1 row-start-1 h-full w-full"
+				in:fade={{ duration: 300, delay: 100 }}
+				out:fade={{ duration: 150 }}
 			>
-				<!-- Pass pairCount based on selected game size -->
+				<!-- Cards grid components -->
 				<PokemonCards {startTimer} {stopTimer} pairCount={gameSize / 2} />
 			</div>
 		{/key}
 	</div>
 
-	<div class="grid grid-cols-3 w-full items-center text-neutral-800 dark:text-white min-h-8">
-		<button onclick={changeColorScheme} class="py-4 opacity-60 text-left">
-			<p>{$preferred === 'dark' ? 'Dark' : 'Light'} Mode</p>
-		</button>
-		<p
-			class={`text-center ${interval ? 'animate-pulse font-bold' : ''} ${finish ? 'text-xl font-bold ' : 'opacity-60'}`}
+	<!-- Bottom Control Dashboard -->
+	<footer 
+		class="grid grid-cols-3 w-full items-center min-h-12 border-t text-sm font-semibold"
+		style="border-color: var(--border-color);"
+	>
+		<!-- Theme toggle button -->
+		<button 
+			onclick={changeColorScheme} 
+			class="py-3 opacity-60 hover:opacity-100 text-left hover-lift flex items-center gap-2"
+			style="color: var(--text-secondary);"
 		>
-			{formatTime(elapsed)}
-		</p>
-		<button class="py-4 opacity-60 text-right" onclick={() => (showModal = true)}>
-			<p>About ?</p>
+			<span class="capitalize text-xs md:text-sm">{$preferred === 'dark' ? 'Dark' : 'Light'} Mode</span>
+			<span class="hidden md:inline font-mono text-[10px] opacity-65 border px-1 rounded" style="border-color: var(--border-color); background-color: var(--surface-color);">T</span>
 		</button>
-	</div>
 
+		<!-- Large, centered game timer -->
+		<div class="flex justify-center items-center">
+			<p
+				class={`text-center font-mono tracking-widest text-lg py-1 px-3 rounded-full border ${interval ? 'animate-pulse font-bold' : ''} ${finish ? 'font-bold' : 'opacity-70'}`}
+				style={finish ? 'background-color: var(--accent-green-bg); color: var(--accent-green-text); border-color: var(--accent-green-text);' : 'background-color: var(--surface-color); border-color: var(--border-color); color: var(--text-primary);'}
+			>
+				{formatTime(elapsed)}
+			</p>
+		</div>
+
+		<!-- About info trigger -->
+		<button 
+			class="py-3 opacity-60 hover:opacity-100 text-right hover-lift text-xs md:text-sm" 
+			style="color: var(--text-secondary);"
+			onclick={() => (showModal = true)}
+		>
+			About ?
+		</button>
+	</footer>
+
+	<!-- Modal definition -->
 	<ModalAbout bind:showModal {sab} />
 </div>

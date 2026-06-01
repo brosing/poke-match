@@ -104,7 +104,7 @@
 </script>
 
 <div
-	class={`grid ${gridCols} gap-[2px] md:gap-1 overflow-y-auto`}
+	class={`grid ${gridCols} gap-2.5 md:gap-4 p-1 overflow-y-auto md:max-h-none`}
 >
 	{#each randomPokemons as pokemon (pokemon.identifier)}
 		<PokemonCard bind:rotatedCards {pokemon} {matchCards} {playFlipSound} {playMatchSound} />

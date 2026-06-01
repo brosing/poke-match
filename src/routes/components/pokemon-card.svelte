@@ -17,6 +17,7 @@
 		playFlipSound,
 		playMatchSound
 	}: Props = $props();
+	
 	type EventHandle = Event & {
 		currentTarget: EventTarget & Element;
 	};
@@ -26,14 +27,12 @@
 	let isRotated = $derived(findCurrentCard(pokemon, rotatedCards));
 
 	$effect(() => {
-		console.log(pokemon.id);
-	})
-	$effect(() => {
 		if (isRotated) {
 			isFirstRotattion = true;
 			playFlipSound();
 		}
 	});
+	
 	$effect(() => {
 		if (isMatch) {
 			playMatchSound();
@@ -47,49 +46,83 @@
 	};
 
 	let isLoaded = $state(false);
-	let backgroundColor = $state('grey');
+	let backgroundColor = $state('rgba(250, 250, 250, 0.1)');
 	const handleImageLoad = (e: EventHandle) => {
 		const image = e.currentTarget as HTMLImageElement;
-		backgroundColor = getImageMostColor(image);
+		backgroundColor = getImageMostColor(image, { opacity: '0.12' });
 	};
-
 </script>
 
 <button
-	class={`relative m-0 flex-1 ${isMatch ? 'animate-flash' : ''}`}
+	class={`relative m-0 w-full aspect-[3/4] rounded-xl overflow-hidden focus:outline-none transition-all duration-300 ${isMatch ? 'animate-flash' : ''}`}
 	onclick={() => {
-		rotatedCards = [...rotatedCards, pokemon];
+		if (!isRotated) {
+			rotatedCards = [...rotatedCards, pokemon];
+		}
 	}}
 	disabled={isRotated}
 >
+	<!-- CARD BACK -->
 	<div
-		class={`z-0 absolute top-0 left-0 h-full w-full bg-neutral-200 dark:bg-neutral-500 rounded-lg ${isFirstRotattion ? (isRotated ? 'animate-flip-in-gone' : 'animate-flip-out-visible') : ''}`}
-	></div>
-	<div
-		class={`relative p-3 h-full rounded-lg flex flex-col items-center justify-center gap-1 [backface-visibility:hidden] [transform:rotateY(-180deg)] ${isFirstRotattion ? (isRotated ? 'animate-flip-in' : 'animate-flip-out') : ''}`}
-		style={`background-color: ${backgroundColor};`}
+		class={`z-0 absolute top-0 left-0 h-full w-full rounded-xl border flex flex-col items-center justify-center transition-all duration-300 hover-lift ${isFirstRotattion ? (isRotated ? 'animate-flip-in-gone' : 'animate-flip-out-visible') : ''}`}
+		style="background-color: var(--surface-color); border-color: var(--border-color);"
 	>
-		<img
-			alt={pokemon.name}
-			src={`${PUBLIC_IMAGE_URL}/${pokemon.id}.png`}
-			class="absolute top-2 w-3/4 h-auto scale-90"
-			onerror={(e) => {
-				handleError(e);
-			}}
-			onload={(e) => {
-				isLoaded = true;
-				handleImageLoad(e);
-			}}
-		/>
+		<!-- Minimalist Pokéball SVG Outline -->
+		<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="var(--text-secondary)" stroke-width="1.2" class="w-9 h-9 opacity-25 select-none pointer-events-none transition-all duration-350">
+			<circle cx="12" cy="12" r="10" />
+			<path d="M2 12h20M12 9a3 3 0 1 0 0 6 3 3 0 0 0 0-6z" fill="var(--bg-color)" />
+		</svg>
+	</div>
 
-		<img
-			alt="poke ball"
-			src={fallbackImage}
-			class={`w-3/4 h-auto scale-75 ${isLoaded ? 'invisible' : 'bg-neutral-200'}`}
-		/>
+	<!-- CARD FRONT -->
+	<div
+		class={`relative p-3 h-full rounded-xl border flex flex-col items-center justify-between [backface-visibility:hidden] [transform:rotateY(-180deg)] transition-all duration-300 ${isFirstRotattion ? (isRotated ? 'animate-flip-in' : 'animate-flip-out') : ''}`}
+		style={`background-color: ${backgroundColor}; border-color: var(--border-color);`}
+	>
+		<!-- Pokemon Image -->
+		<div class="relative flex-1 w-full flex items-center justify-center mt-2 min-h-0">
+			<img
+				alt={pokemon.name}
+				src={`${PUBLIC_IMAGE_URL}/${pokemon.id}.png`}
+				class="max-w-[85%] max-h-[85%] object-contain select-none transition-transform duration-300"
+				onerror={(e) => {
+					handleError(e);
+				}}
+				onload={(e) => {
+					isLoaded = true;
+					handleImageLoad(e);
+				}}
+			/>
 
-		<p class="z-10 text-black dark:text-white opacity-50 text-md font-bold capitalize mt-1 md:mt-3">
+			<!-- Loader Ball image -->
+			<img
+				alt="loading"
+				src={fallbackImage}
+				class={`absolute w-1/2 h-auto opacity-20 animate-spin-slow ${isLoaded ? 'hidden' : 'block'}`}
+			/>
+		</div>
+
+		<!-- Pokemon Name -->
+		<span 
+			class="z-10 text-xs md:text-sm font-bold tracking-wider capitalize text-center mt-2 block select-none truncate w-full"
+			style="color: var(--text-primary); opacity: 0.8;"
+		>
 			{pokemon.name}
-		</p>
+		</span>
 	</div>
 </button>
+
+<style>
+	/* Micro-spin for placeholder loader */
+	:global(.animate-spin-slow) {
+		animation: spin 3s linear infinite;
+	}
+	@keyframes spin {
+		from {
+			transform: rotate(0deg);
+		}
+		to {
+			transform: rotate(360deg);
+		}
+	}
+</style>
