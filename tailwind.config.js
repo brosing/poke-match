@@ -86,14 +86,14 @@ export default {
 				'slide-up-in': 'slide-up-in .5s ease-in-out forwards',
 				'drop-out': 'drop-out 0.5s ease-in 0.25s 1 forwards',
 				'browse-in': 'browse-in 0.4s ease-in-out 0.25s 1 forwards',
-				'flip-in': 'flip-in 0.5s ease-out 0.25s 1 forwards',
-				'flip-out': 'flip-out 0.5s ease-in 0.25s 1 forwards',
+				'flip-in': 'flip-in 0.3s ease-out 0s 1 forwards',
+				'flip-out': 'flip-out 0.3s ease-in 0s 1 forwards',
 				flash: 'flash 0.6s ease-in-out 0.25s 1',
 				'flash-infinite': 'flash-infinite 3s linear infinite',
 				'flip-in-gone':
-					'flip-in 0.5s ease-out 0.25s 1 forwards, to-gone 0.5s ease-out 0.25s 1 forwards',
+					'flip-in 0.3s ease-out 0s 1 forwards, to-gone 0.3s ease-out 0s 1 forwards',
 				'flip-out-visible':
-					'flip-out 0.5s ease-in 0.25s 1 forwards, to-visible 0.5s ease-out 0.25s 1 forwards'
+					'flip-out 0.3s ease-in 0s 1 forwards, to-visible 0.3s ease-out 0s 1 forwards'
 			}
 		}
 	},
