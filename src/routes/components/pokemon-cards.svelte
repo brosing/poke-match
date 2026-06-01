@@ -95,16 +95,34 @@
 		}
 	});
 
-	let gridCols = $derived.by(() => {
+	let cols = $derived.by(() => {
 		const total = pairCount * 2;
-		if (total === 18) return 'grid-cols-6';
-		if (total === 32) return 'grid-cols-8';
-		return 'grid-cols-3 md:grid-cols-4';
+		if (total === 12) {
+			return windowWidth < 768 ? 3 : 4;
+		}
+		if (total === 18) return 6;
+		if (total === 32) return 8;
+		return 4;
 	});
+
+	let rows = $derived.by(() => {
+		const total = pairCount * 2;
+		if (total === 12) {
+			return windowWidth < 768 ? 4 : 3;
+		}
+		if (total === 18) return 3;
+		if (total === 32) return 4;
+		return 3;
+	});
+
+	let windowWidth = $state(0);
 </script>
 
+<svelte:window bind:innerWidth={windowWidth} />
+
 <div
-	class={`grid ${gridCols} gap-2.5 md:gap-4 p-1 overflow-y-auto md:max-h-none`}
+	class="grid w-full h-full gap-2 md:gap-4 p-0.5 overflow-hidden"
+	style={`grid-template-columns: repeat(${cols}, minmax(0, 1fr)); grid-template-rows: repeat(${rows}, minmax(0, 1fr));`}
 >
 	{#each randomPokemons as pokemon (pokemon.identifier)}
 		<PokemonCard bind:rotatedCards {pokemon} {matchCards} {playFlipSound} {playMatchSound} />

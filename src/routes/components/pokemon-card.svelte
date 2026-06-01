@@ -54,7 +54,7 @@
 </script>
 
 <button
-	class={`relative m-0 w-full aspect-[3/4] rounded-xl overflow-hidden focus:outline-none transition-all duration-300 ${isMatch ? 'animate-flash' : ''}`}
+	class={`relative w-full h-full rounded-xl overflow-hidden focus:outline-none transition-all duration-300 ${isMatch ? 'animate-flash' : ''}`}
 	onclick={() => {
 		if (!isRotated) {
 			rotatedCards = [...rotatedCards, pokemon];
@@ -64,7 +64,7 @@
 >
 	<!-- CARD BACK -->
 	<div
-		class={`z-0 absolute top-0 left-0 h-full w-full rounded-xl border flex flex-col items-center justify-center transition-all duration-300 hover-lift ${isFirstRotattion ? (isRotated ? 'animate-flip-in-gone' : 'animate-flip-out-visible') : ''}`}
+		class={`absolute inset-0 rounded-xl border flex flex-col items-center justify-center transition-all duration-300 hover-lift ${isFirstRotattion ? (isRotated ? 'animate-flip-in-gone' : 'animate-flip-out-visible') : ''}`}
 		style="background-color: var(--surface-color); border-color: var(--border-color);"
 	>
 		<!-- Minimalist Pokéball SVG Outline -->
@@ -76,7 +76,7 @@
 
 	<!-- CARD FRONT -->
 	<div
-		class={`relative p-3 h-full rounded-xl border flex flex-col items-center justify-between [backface-visibility:hidden] [transform:rotateY(-180deg)] transition-all duration-300 ${isFirstRotattion ? (isRotated ? 'animate-flip-in' : 'animate-flip-out') : ''}`}
+		class={`absolute inset-0 p-2 md:p-3 rounded-xl border flex flex-col items-center justify-between [backface-visibility:hidden] [transform:rotateY(-180deg)] transition-all duration-300 ${isFirstRotattion ? (isRotated ? 'animate-flip-in' : 'animate-flip-out') : ''}`}
 		style={`background-color: ${backgroundColor}; border-color: var(--border-color);`}
 	>
 		<!-- Pokemon Image -->
