@@ -8,6 +8,8 @@
 		matchCards: App.Pokemon[];
 		playFlipSound: () => void;
 		playMatchSound: () => void;
+		finish?: boolean;
+		onclick?: () => void;
 	}
 
 	let {
@@ -15,9 +17,13 @@
 		rotatedCards = $bindable(),
 		matchCards,
 		playFlipSound,
-		playMatchSound
+		playMatchSound,
+		finish,
+		onclick
 	}: Props = $props();
 	
+	import { goto } from '$app/navigation';
+
 	type EventHandle = Event & {
 		currentTarget: EventTarget & Element;
 	};
@@ -51,16 +57,27 @@
 		const image = e.currentTarget as HTMLImageElement;
 		backgroundColor = getImageMostColor(image, { opacity: '0.12' });
 	};
+
+	function handleClick() {
+		if (finish) {
+			const img = document.getElementById(`img-${pokemon.identifier}`);
+			if (img) {
+				// @ts-ignore
+				img.style.viewTransitionName = `pokemon-image-${pokemon.id}`;
+			}
+			goto(`/pokemon/${pokemon.id}`);
+			return;
+		}
+		if (!isRotated) {
+			rotatedCards = [...rotatedCards, pokemon];
+		}
+	}
 </script>
 
 <button
 	class={`relative w-full h-full rounded-xl overflow-hidden focus:outline-none transition-all duration-300 ${isMatch ? 'animate-flash' : ''}`}
-	onclick={() => {
-		if (!isRotated) {
-			rotatedCards = [...rotatedCards, pokemon];
-		}
-	}}
-	disabled={isRotated}
+	onclick={handleClick}
+	disabled={isRotated && !finish}
 >
 	<!-- CARD BACK -->
 	<div
@@ -82,6 +99,7 @@
 		<!-- Pokemon Image -->
 		<div class="relative flex-1 w-full flex items-center justify-center mt-2 min-h-0">
 			<img
+				id={`img-${pokemon.identifier}`}
 				alt={pokemon.name}
 				src={`${PUBLIC_IMAGE_URL}/${pokemon.id}.png`}
 				class="max-w-[85%] max-h-[85%] object-contain select-none transition-transform duration-300"

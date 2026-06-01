@@ -26,6 +26,9 @@
 	const gameSizeStore = localStorageStore<number>('gameSize', 12);
 	let gameSize = $derived(gameSizeStore ? $gameSizeStore : 12);
 
+	const elapsedStore = localStorageStore<number>('elapsed', 0);
+	let elapsed = $state(0);
+
 	$effect(() => {
 		if (windowWidth > 0 && windowWidth < 768 && gameSize !== 12) {
 			updateGameSize(12);
@@ -36,17 +39,19 @@
 		gameSizeStore?.set(size);
 		reloadCards();
 	}
-	let elapsed = $state(0);
 	let interval: number | undefined = $state();
 	function startTimer() {
 		if (!interval) {
 			const startTime = Date.now() - elapsed;
 			interval = setInterval(() => {
 				elapsed = Date.now() - startTime;
+				elapsedStore?.set(elapsed);
 			}, 100);
 		}
 	}
 	function stopTimer() {
+		if (!interval) return;
+
 		const newTime = formatTime(elapsed);
 		if (newTime !== '00:00') {
 			leaderboard?.update((data) => {
@@ -56,9 +61,18 @@
 		}
 		clearInterval(interval);
 		interval = undefined;
+
+		if (browser) {
+			let successSound = new Audio(successMp3);
+			setTimeout(() => {
+				successSound.play();
+			}, 1000);
+		}
 	}
 
 	onMount(() => {
+		elapsedStore?.subscribe(val => elapsed = val);
+
 		// handle bottom space "sab"
 		const bottomSpace = getComputedStyle(document.documentElement).getPropertyValue('--sab');
 		if (bottomSpace) {
@@ -80,17 +94,13 @@
 		clearInterval(interval);
 		interval = undefined;
 		elapsed = 0;
+		elapsedStore?.set(0);
+		localStorage.removeItem('rotatedCards');
+		localStorage.removeItem('processedCount');
+		localStorage.removeItem('randomPokemons');
 	};
 
 	let finish = $derived(interval === undefined && elapsed > 0);
-	$effect(() => {
-		if (browser && finish) {
-			let successSound = new Audio(successMp3)
-			setTimeout(() => {
-				successSound.play()
-			}, 1200);
-		}
-	});
 	let showModal = $state(false);
 
 	// Handle global keyboard listeners
@@ -119,7 +129,7 @@
 >
 	<!-- Header Bar -->
 	<header
-		class="relative py-4 md:py-6 flex flex-row items-center justify-between border-b"
+		class="relative pb-4 md:py-6 flex flex-row items-center justify-between border-b"
 		style="border-color: var(--border-color);"
 	>
 		<div class="flex-1">
@@ -131,6 +141,7 @@
 				>
 					Congratulations!
 				</h1>
+				<p class="text-sm tracking-wider capitalize block opacity-75" transition:slide={{ delay: 300, duration: 300, easing: quintOut, axis: 'y' }}>Tap card to see pokemon details</p>
 			{:else}
 				<h1
 					class="text-4xl md:text-5xl font-bold tracking-tight"
@@ -189,7 +200,7 @@
 				out:fade={{ duration: 150 }}
 			>
 				<!-- Cards grid components -->
-				<PokemonCards {startTimer} {stopTimer} pairCount={gameSize / 2} />
+				<PokemonCards {startTimer} {stopTimer} pairCount={gameSize / 2} {finish} />
 			</div>
 		{/key}
 	</div>
@@ -232,3 +243,18 @@
 	<!-- Modal definition -->
 	<ModalAbout bind:showModal {sab} />
 </div>
+
+<style>
+	/* Custom bounce animation for detail card pokemon artwork */
+	:global(.animate-bounce-slow) {
+		animation: bounce-slow 4s ease-in-out infinite;
+	}
+	@keyframes bounce-slow {
+		0%, 100% {
+			transform: translateY(0);
+		}
+		50% {
+			transform: translateY(-8px);
+		}
+	}
+</style>

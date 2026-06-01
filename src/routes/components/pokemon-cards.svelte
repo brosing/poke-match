@@ -6,10 +6,12 @@
 	import matchMp3 from '$lib/sound/right.mp3';
 	import { browser } from '$app/environment';
 
-	let { startTimer, stopTimer, pairCount = 6 }: {
+	let { startTimer, stopTimer, pairCount = 6, finish = false, onSelectPokemon }: {
 		startTimer: () => void;
 		stopTimer: () => void;
 		pairCount?: number;
+		finish?: boolean;
+		onSelectPokemon?: (p: App.Pokemon) => void;
 	} = $props();
 
 	let flipSound = browser ? new Audio(flipMp3) : null
@@ -30,27 +32,45 @@
 	}
 
 	const pokemons = localStorageStore<Omit<App.Pokemon, 'identifier'>[]>('pokemons', []);
+	const randomPokemonsStore = localStorageStore<App.Pokemon[]>('randomPokemons', []);
 	let randomPokemons: App.Pokemon[] = $state([]);
 
+	const rotatedCardsStore = localStorageStore<App.Pokemon[]>('rotatedCards', []);
+	const processedCountStore = localStorageStore<number>('processedCount', 0);
+
+	let rotatedCards: App.Pokemon[] = $state([]);
+	let processedCount = $state(0);
+
 	onMount(async () => {
+		rotatedCardsStore?.subscribe(val => rotatedCards = val);
+		processedCountStore?.subscribe(val => processedCount = val);
+		randomPokemonsStore?.subscribe(val => randomPokemons = val);
+
 		// NOTE to sync with localStorage
 		pokemons?.subscribe(async (data: App.Pokemon[]) => {
 			if (data.length === 0) {
 				const result = await queryUnevolvedPokmons();
 				pokemons?.set(result);
-			} else {
+			} else if (randomPokemons.length === 0) {
 				// get based on pairCount & double it
 				const randomSet = shuffle(data).slice(0, pairCount);
 				const doubleSet = addIdentifier([...randomSet, ...randomSet]);
 				randomPokemons = shuffle(doubleSet);
+				randomPokemonsStore?.set(randomPokemons);
 			}
 		});
 	});
 
-	let rotatedCards: App.Pokemon[] = $state([]);
+	$effect(() => {
+		rotatedCardsStore?.set(rotatedCards);
+	});
+
+	$effect(() => {
+		processedCountStore?.set(processedCount);
+	});
+
 	let matchCards: App.Pokemon[] = $state([]); // add flash effect on match cards
 	let lastMatchCardID: string = ''; // prevent flash effect on prev match cards
-	let processedCount = 0;
 
 	$effect(() => {
 		if (rotatedCards.length === 1) {
@@ -125,6 +145,14 @@
 	style={`grid-template-columns: repeat(${cols}, minmax(0, 1fr)); grid-template-rows: repeat(${rows}, minmax(0, 1fr));`}
 >
 	{#each randomPokemons as pokemon (pokemon.identifier)}
-		<PokemonCard bind:rotatedCards {pokemon} {matchCards} {playFlipSound} {playMatchSound} />
+		<PokemonCard 
+			bind:rotatedCards 
+			{pokemon} 
+			{matchCards} 
+			{playFlipSound} 
+			{playMatchSound} 
+			{finish}
+			onclick={() => onSelectPokemon?.(pokemon)}
+		/>
 	{/each}
 </div>
